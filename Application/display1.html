@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Climate Symposium 2025 - Display 1 (Agenda)</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Override for single screen display */
+        .container { 
+            display: block; 
+        }
+        .screen-2 { 
+            display: none !important; 
+        }
+        .screen-1 { 
+            width: 100vw; 
+            height: 100vh; 
+            flex: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Main container holding screen 1 only -->
+    <div class="container">
+        <!-- Screen 1: Agenda List (Full Screen) -->
+        <div id="screen1" class="screen screen-1">
+            <div id="agendaList" class="agenda-list"></div>
+        </div>
+    </div>
+
+    <!-- Debug panel - HIDDEN BY DEFAULT -->
+    <div id="debugPanel" class="debug-panel" style="display: none;">
+        <div><strong>Climate Symposium 2025 - Debug Panel</strong></div>
+        <div>System Time: <span id="debugSystemTime"></span></div>
+        <div>Display Time: <span id="debugDisplayTime"></span></div>
+        <div>Current Event: <span id="debugCurrentEvent"></span></div>
+        <div>Mode: <span id="debugMode">Real-Time</span></div>
+        <div>Status: <span id="debugStatus">Waiting</span></div>
+        <div>Day: <span id="debugDay">Day 1</span></div>
+        <div>Pre-Event Mode: <span id="debugPreEvent">Inactive</span></div>
+        <div style="margin-top: 10px; font-size: 0.8em; color: #95a5a6;">
+            <strong>Controls:</strong><br>
+            D - Toggle Debug Panel<br>
+            P - Toggle Preview Mode
+        </div>
+    </div>
+
+    <!-- Climate Symposium System Scripts -->
+    <script src="model.js"></script>
+    <script src="view.js"></script>
+    <script src="controller.js"></script>
+    <script src="app-display1.js"></script>
+</body>
+</html>

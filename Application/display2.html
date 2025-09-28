@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Climate Symposium 2025 - Display 2 (Event Details)</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Override for single screen display */
+        .container { 
+            display: block; 
+        }
+        .screen-1 { 
+            display: none !important; 
+        }
+        .screen-2 { 
+            width: 100vw; 
+            height: 100vh; 
+            flex: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Live indicator showing system is running -->
+    <div class="status-indicator">● LIVE</div>
+    
+    <!-- Current time clock -->
+    <div class="clock" id="currentClock">00:00:00</div>
+
+    <!-- Main container holding screen 2 only -->
+    <div class="container">
+        <!-- Screen 2: Event Details (Full Screen) -->
+        <div id="screen2" class="screen screen-2">
+            <div id="currentDetail" class="current-detail">
+                
+                <!-- Default content before system loads -->
+                <div class="no-current-event">
+                    <h2>Symposium on Climate Actions 2025</h2>
+                    <p>Waiting for event information...</p>
+                    <div class="conference-info">
+                        <h4>System Status</h4>
+                        <p>Initializing display system...</p>
+                        <p>Loading conference data...</p>
+                        <p>Please wait while we prepare the event details</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Debug panel for Display 2 - HIDDEN BY DEFAULT -->
+    <div id="debugPanel" class="debug-panel" style="display: none;">
+        <div><strong>Climate Symposium 2025 - Display 2 Debug</strong></div>
+        <div>System Time: <span id="debugSystemTime"></span></div>
+        <div>Current Event: <span id="debugCurrentEvent"></span></div>
+        <div>Status: <span id="debugStatus">Waiting</span></div>
+        <div>Day: <span id="debugDay">Day 1</span></div>
+        <div>Sync Status: <span id="debugSync">Waiting</span></div>
+        <div style="margin-top: 10px; font-size: 0.8em; color: #95a5a6;">
+            <strong>Controls:</strong><br>
+            D - Toggle Debug Panel<br>
+            R - Restart System<br>
+            Display 2 syncs with Display 1
+        </div>
+    </div>
+
+    <!-- Climate Symposium System Scripts - NO PARTICLES -->
+    <script src="model.js"></script>
+    <script src="view.js"></script>
+    <script src="controller.js"></script>
+    <script src="app-display2.js"></script>
+</body>
+</html>
