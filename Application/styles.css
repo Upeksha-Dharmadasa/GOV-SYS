@@ -1,5 +1,5 @@
 /* ============================================================================
-   CSS STYLES - CLIMATE SYMPOSIUM 2025 - FINAL WORKING VERSION
+   CSS STYLES - CLIMATE SYMPOSIUM 2025 - FINAL COMPLETE VERSION
    ============================================================================ */
 
 /* Import Poppins font */
@@ -99,11 +99,11 @@ body::after {
     flex-shrink: 0;
 }
 
-/* MOVING TEXT BANNER */
+/* MOVING TEXT BANNER - LOGO SIZE REDUCED */
 .moving-text-container {
     width: 100%;
     height: clamp(80px, 8vh, 120px);
-    margin-bottom: clamp(50px, 6vw, 100px);
+    margin-bottom: clamp(30px, 4vw, 60px);
     overflow: hidden;
     position: relative;
     display: flex;
@@ -116,13 +116,108 @@ body::after {
     font-weight: 400;
     color: #000;
     white-space: nowrap;
-    animation: moveTextSlowly 35s linear infinite;
+    animation: moveTextContinuous 30s linear infinite;
     line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: clamp(40px, 5vw, 80px);
 }
 
-@keyframes moveTextSlowly {
-    0% { transform: translateX(100%); }
-    100% { transform: translateX(-100%); }
+/* LOGO IN MOVING TEXT - SMALLER SIZE TO PREVENT CUTTING */
+.moving-logo {
+    width: clamp(40px, 4vw, 70px);
+    height: clamp(40px, 4vw, 70px);
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+@keyframes moveTextContinuous {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+/* COUNTDOWN TIMER - APPEARS BEFORE EVENT STARTS */
+.countdown-container {
+    width: 100%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 240, 240, 0.95) 100%);
+    backdrop-filter: blur(10px);
+    border-radius: clamp(20px, 3vw, 35px);
+    padding: clamp(25px, 4vw, 50px);
+    margin-bottom: clamp(40px, 5vw, 80px);
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    position: relative;
+    z-index: 3;
+    border: 2px solid rgba(32, 173, 193, 0.3);
+    transition: all 0.3s ease;
+}
+
+.countdown-container.hidden {
+    display: none;
+}
+
+.countdown-message {
+    font-family: 'Poppins', sans-serif;
+    font-size: clamp(1.2em, 2.2vw, 3.5em);
+    font-weight: 600;
+    color: #087F8D;
+    margin-bottom: clamp(15px, 2.5vw, 30px);
+    text-transform: uppercase;
+    letter-spacing: clamp(0.5px, 0.1vw, 2px);
+}
+
+.countdown-timer {
+    display: flex;
+    justify-content: center;
+    gap: clamp(15px, 3vw, 40px);
+    flex-wrap: wrap;
+}
+
+.countdown-unit {
+    background: linear-gradient(135deg, #20ADC1 0%, #087F8D 100%);
+    border-radius: clamp(12px, 2vw, 20px);
+    padding: clamp(15px, 2.5vw, 30px) clamp(20px, 3vw, 40px);
+    min-width: clamp(80px, 12vw, 140px);
+    box-shadow: 0 8px 25px rgba(8, 127, 141, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.countdown-unit::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+.countdown-number {
+    font-family: 'Poppins', sans-serif;
+    font-size: clamp(2.5em, 4.5vw, 6em);
+    font-weight: 800;
+    color: white;
+    line-height: 1;
+    display: block;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.countdown-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: clamp(0.8em, 1.2vw, 1.6em);
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+    text-transform: uppercase;
+    letter-spacing: clamp(0.5px, 0.1vw, 1.5px);
+    margin-top: clamp(5px, 1vw, 10px);
+    display: block;
 }
 
 .conference-logo {
@@ -200,7 +295,7 @@ body::after {
     scrollbar-width: none;
 }
 
-/* EVENT CARDS - CRITICAL: overflow must be visible for ::after tag */
+/* EVENT CARDS - overflow visible for ::after tag */
 .event-item {
     background: white;
     color: #333;
@@ -210,35 +305,37 @@ body::after {
     position: relative;
     border-radius: clamp(15px, 2vw, 25px);
     box-shadow: 0 15px 50px rgba(0, 0, 0, 0.08);
-    overflow: visible !important;  /* CRITICAL FOR TAG */
+    overflow: visible !important;
     min-height: clamp(100px, 10vh, 140px);
     z-index: 1;
 }
 
-/* CURRENT EVENT */
+/* CURRENT EVENT - HIGHLIGHTED IN TEAL - STRONGER SPECIFICITY */
 .event-item.current-active {
     background: #087F8D !important;
     color: white !important;
-    min-height: clamp(200px, 20vh, 280px) !important;
+    min-height: clamp(220px, 22vh, 320px) !important;
     margin-bottom: clamp(60px, 7vw, 80px) !important;
     z-index: 10 !important;
-    box-shadow: 0 30px 80px rgba(8, 127, 141, 0.4) !important;
-    transform: scale(1.02) !important;
+    box-shadow: 0 30px 80px rgba(8, 127, 141, 0.5) !important;
+    transform: scale(1.03) !important;
+    transition: all 0.4s ease !important;
 }
 
 .event-item.current-active .title {
     color: white !important;
     font-weight: 800 !important;
-    font-size: clamp(2em, 3.5vw, 5.5em) !important;
-    text-shadow: 2px 2px 8px rgba(0,0,0,0.6) !important;
-    margin-bottom: clamp(15px, 2.5vw, 25px) !important;
+    font-size: clamp(2.2em, 3.8vw, 6em) !important;
+    text-shadow: 2px 2px 10px rgba(0,0,0,0.7) !important;
+    margin-bottom: clamp(18px, 3vw, 30px) !important;
+    line-height: 1.2 !important;
 }
 
 .event-item.current-active .time {
     color: white !important;
     font-weight: 700 !important;
-    font-size: clamp(1.6em, 2.8vw, 4em) !important;
-    text-shadow: 1px 1px 4px rgba(0,0,0,0.4) !important;
+    font-size: clamp(1.8em, 3vw, 4.5em) !important;
+    text-shadow: 1px 1px 6px rgba(0,0,0,0.5) !important;
 }
 
 /* PAST EVENTS - LIGHTER BACKGROUND */
@@ -248,7 +345,7 @@ body::after {
     color: #6c757d !important;
 }
 
-/* COMPLETED TAG - GRADIENT BACKGROUND, POPPINS FONT */
+/* COMPLETED TAG - GRADIENT BACKGROUND */
 .event-item.past-event::after {
     content: 'Completed' !important;
     display: block !important;
@@ -268,46 +365,10 @@ body::after {
     box-shadow: 0 4px 12px rgba(32, 173, 193, 0.4) !important;
 }
 
-/* Responsive for mobile */
-@media (max-width: 768px) {
-    .event-item.past-event::after {
-        font-size: clamp(0.6em, 3vw, 1em) !important;
-        padding: clamp(5px, 1.5vw, 8px) clamp(10px, 2.5vw, 15px) !important;
-    }
-}
-
-/* FUTURE EVENTS */
+/* FUTURE EVENTS - WHITE BACKGROUND */
 .event-item.future-event {
-    background: white;
-    color: #333;
-}
-
-/* PREVIEW HIGHLIGHT */
-.event-item.highlight-preview {
-    background: linear-gradient(135deg, rgba(255, 193, 7, 0.95) 0%, rgba(255, 152, 0, 0.95) 100%) !important;
-    box-shadow: 0 25px 70px rgba(255, 193, 7, 0.3) !important;
-    min-height: clamp(160px, 16vh, 200px) !important;
-    margin: clamp(40px, 5vw, 60px) 15px !important;
-    z-index: 15 !important;
-}
-
-.event-item.highlight-preview .title {
-    color: white !important;
-    text-shadow: 2px 2px 6px rgba(0,0,0,0.7) !important;
-    font-size: clamp(1.6em, 2.8vw, 4.2em) !important;
-    font-weight: 700 !important;
-}
-
-.event-item.highlight-preview .time {
-    color: white !important;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.5) !important;
-    font-size: clamp(1.2em, 2.2vw, 3em) !important;
-    font-weight: 600 !important;
-}
-
-.all-events:has(.highlight-preview) .event-item:not(.highlight-preview) {
-    background: rgba(255, 255, 255, 0.58) !important;
-    backdrop-filter: blur(2px);
+    background: white !important;
+    color: #333 !important;
 }
 
 /* EVENT TEXT */
@@ -366,7 +427,318 @@ body::after {
     height: 100%;
 }
 
-/* RESPONSIVE */
+/* =============================================================================
+   RESPONSIVE DESIGN - 11ft tall screens down to mobile
+   ============================================================================ */
+
+/* Extra large displays (11ft/3.3m tall screens) */
+@media (min-height: 2000px) {
+    body {
+        font-size: 28px;
+    }
+    
+    .agenda-header {
+        min-height: 280px;
+        padding: 70px;
+    }
+    
+    .conference-logo img {
+        max-width: 350px;
+    }
+    
+    .event-title {
+        font-size: 5em;
+    }
+    
+    .event-day {
+        font-size: 3.2em;
+    }
+    
+    .moving-text {
+        font-size: 8em;
+    }
+    
+    .moving-logo {
+        width: 90px;
+        height: 90px;
+    }
+    
+    .countdown-container {
+        padding: 70px;
+        margin-bottom: 100px;
+    }
+    
+    .countdown-message {
+        font-size: 4.5em;
+        margin-bottom: 45px;
+    }
+    
+    .countdown-unit {
+        padding: 40px 55px;
+        min-width: 180px;
+    }
+    
+    .countdown-number {
+        font-size: 7.5em;
+    }
+    
+    .countdown-label {
+        font-size: 2em;
+    }
+    
+    .event-item {
+        min-height: 200px;
+        padding: 55px;
+    }
+    
+    .event-item.current-active {
+        min-height: 350px;
+    }
+}
+
+/* Large displays (4K TVs, conference room displays) */
+@media (min-height: 1400px) and (max-height: 1999px) {
+    body {
+        font-size: 22px;
+    }
+    
+    .agenda-header {
+        min-height: 240px;
+        padding: 55px;
+    }
+    
+    .conference-logo img {
+        max-width: 280px;
+    }
+    
+    .event-title {
+        font-size: 4em;
+    }
+    
+    .event-day {
+        font-size: 2.8em;
+    }
+    
+    .moving-text {
+        font-size: 6.5em;
+    }
+    
+    .moving-logo {
+        width: 75px;
+        height: 75px;
+    }
+    
+    .countdown-container {
+        padding: 55px;
+        margin-bottom: 85px;
+    }
+    
+    .countdown-message {
+        font-size: 3.8em;
+        margin-bottom: 38px;
+    }
+    
+    .countdown-unit {
+        padding: 35px 48px;
+        min-width: 160px;
+    }
+    
+    .countdown-number {
+        font-size: 6.5em;
+    }
+    
+    .countdown-label {
+        font-size: 1.8em;
+    }
+    
+    .event-item {
+        min-height: 160px;
+        padding: 45px;
+    }
+    
+    .event-item.current-active {
+        min-height: 300px;
+    }
+}
+
+/* Standard desktop/laptop screens */
+@media (min-height: 768px) and (max-height: 1399px) {
+    body {
+        font-size: 16px;
+    }
+    
+    .moving-logo {
+        width: 55px;
+        height: 55px;
+    }
+}
+
+/* Tablet portrait and smaller laptops */
+@media (max-height: 767px) {
+    body {
+        font-size: 14px;
+        padding: 15px;
+    }
+    
+    .agenda-header {
+        min-height: 100px;
+        padding: 25px;
+        margin-bottom: 30px;
+    }
+    
+    .conference-logo img {
+        max-width: 120px;
+    }
+    
+    .event-title {
+        font-size: 1.8em;
+    }
+    
+    .event-day {
+        font-size: 1.3em;
+    }
+    
+    .moving-text-container {
+        height: 60px;
+        margin-bottom: 25px;
+    }
+    
+    .moving-text {
+        font-size: 2em;
+    }
+    
+    .moving-logo {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .countdown-container {
+        padding: 25px;
+        margin-bottom: 35px;
+    }
+    
+    .countdown-message {
+        font-size: 1.5em;
+        margin-bottom: 18px;
+    }
+    
+    .countdown-timer {
+        gap: 12px;
+    }
+    
+    .countdown-unit {
+        padding: 15px 20px;
+        min-width: 70px;
+    }
+    
+    .countdown-number {
+        font-size: 2.2em;
+    }
+    
+    .countdown-label {
+        font-size: 0.9em;
+        margin-top: 5px;
+    }
+    
+    .event-item {
+        min-height: 90px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .event-item.current-active {
+        min-height: 160px;
+    }
+}
+
+/* Mobile devices */
+@media (max-height: 600px) {
+    body {
+        font-size: 12px;
+        padding: 10px;
+    }
+    
+    .agenda-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        min-height: 80px;
+        padding: 20px;
+        margin-bottom: 25px;
+    }
+    
+    .conference-logo {
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+    
+    .conference-logo img {
+        max-width: 80px;
+    }
+    
+    .event-title {
+        font-size: 1.4em;
+    }
+    
+    .event-day {
+        font-size: 1em;
+        position: static;
+    }
+    
+    .moving-text-container {
+        height: 45px;
+        margin-bottom: 20px;
+    }
+    
+    .moving-text {
+        font-size: 1.5em;
+    }
+    
+    .moving-logo {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .countdown-container {
+        padding: 20px;
+        margin-bottom: 28px;
+    }
+    
+    .countdown-message {
+        font-size: 1.2em;
+        margin-bottom: 15px;
+    }
+    
+    .countdown-timer {
+        gap: 10px;
+    }
+    
+    .countdown-unit {
+        padding: 12px 16px;
+        min-width: 60px;
+    }
+    
+    .countdown-number {
+        font-size: 1.8em;
+    }
+    
+    .countdown-label {
+        font-size: 0.75em;
+        margin-top: 4px;
+    }
+    
+    .event-item {
+        min-height: 70px;
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+    
+    .event-item.current-active {
+        min-height: 120px;
+    }
+}
+
+/* RESPONSIVE - Mobile specific */
 @media (max-width: 768px) {
     .event-item.past-event::after {
         font-size: clamp(0.6em, 3vw, 1em) !important;

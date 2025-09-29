@@ -1,5 +1,5 @@
 /* ============================================================================
-   VIEW - PRESENTATION LAYER - CLIMATE SYMPOSIUM 2025 (FINAL)
+   VIEW - PRESENTATION LAYER - CLIMATE SYMPOSIUM 2025 (FIXED)
    ============================================================================ */
 
 class ConferenceView {
@@ -24,11 +24,14 @@ class ConferenceView {
         this.isDisplay1 = !!this.agendaList && !this.currentDetail;
         this.isDisplay2 = !!this.currentDetail;
         
+        // Pre-event highlight system
+        this.preEventMode = false;
+        this.highlightInterval = null;
+        this.currentHighlightIndex = 0;
+        this.highlightDuration = 12000;
+        
         // Current day for the conference
         this.currentDay = 'Day 1';
-        
-        // Countdown timer interval
-        this.countdownInterval = null;
         
         console.log(`View initialized for ${this.isDisplay1 ? 'Display 1 (Agenda)' : 'Display 2 (Details)'}`);
         
@@ -41,6 +44,67 @@ class ConferenceView {
         if (debugPanel) {
             debugPanel.style.display = 'none';
         }
+    }
+
+    startPreEventHighlights() {
+        if (!this.isDisplay1) return;
+        
+        console.log('=== STARTING PRE-EVENT HIGHLIGHT MODE ===');
+        this.preEventMode = true;
+        this.currentHighlightIndex = 0;
+        
+        if (this.highlightInterval) {
+            clearInterval(this.highlightInterval);
+        }
+        
+        this.doHighlight();
+        
+        this.highlightInterval = setInterval(() => {
+            this.doHighlight();
+        }, this.highlightDuration);
+    }
+
+    doHighlight() {
+        const agenda = window.conferenceApp?.model?.getAgendaData() || [];
+        if (agenda.length === 0) return;
+        
+        const allEvents = document.querySelectorAll('.event-item');
+        allEvents.forEach(element => {
+            element.classList.remove('highlight-preview');
+        });
+        
+        const eventItems = document.querySelectorAll('.event-item');
+        if (eventItems[this.currentHighlightIndex]) {
+            eventItems[this.currentHighlightIndex].classList.add('highlight-preview');
+            
+            const eventTitle = eventItems[this.currentHighlightIndex].querySelector('.title')?.textContent || 'Unknown';
+            const eventTime = eventItems[this.currentHighlightIndex].querySelector('.time')?.textContent || 'Unknown';
+            console.log(`Highlighting: ${eventTime} - ${eventTitle}`);
+        }
+        
+        this.currentHighlightIndex = (this.currentHighlightIndex + 1) % agenda.length;
+    }
+
+    stopPreEventHighlights() {
+        console.log('=== STOPPING PRE-EVENT HIGHLIGHT MODE ===');
+        this.preEventMode = false;
+        
+        if (this.highlightInterval) {
+            clearInterval(this.highlightInterval);
+            this.highlightInterval = null;
+        }
+        
+        const allEvents = document.querySelectorAll('.event-item');
+        allEvents.forEach(element => {
+            element.classList.remove('highlight-preview');
+        });
+    }
+
+    highlightItem(index) {
+        if (!this.isDisplay1) return;
+        
+        this.currentHighlightIndex = index;
+        this.doHighlight();
     }
 
     setupDaySync() {
@@ -88,58 +152,6 @@ class ConferenceView {
         return hours * 60 + minutes;
     }
 
-    /**
-     * Start countdown timer that updates every second
-     */
-    startCountdownTimer(firstEventTime) {
-        // Clear any existing countdown
-        if (this.countdownInterval) {
-            clearInterval(this.countdownInterval);
-        }
-
-        const updateCountdown = () => {
-            const countdownElement = document.querySelector('.countdown-container');
-            if (!countdownElement) return;
-
-            // Get current time
-            const now = new Date();
-            const sriLankanTime = new Date(now.getTime() + (5.5 * 60 * 60 * 1000));
-            const currentMinutes = sriLankanTime.getUTCHours() * 60 + sriLankanTime.getUTCMinutes();
-            
-            // Get first event time in minutes
-            const firstEventMinutes = this.timeToMinutes(firstEventTime);
-            
-            // If event has started or passed, hide countdown
-            if (currentMinutes >= firstEventMinutes) {
-                countdownElement.classList.add('hidden');
-                if (this.countdownInterval) {
-                    clearInterval(this.countdownInterval);
-                    this.countdownInterval = null;
-                }
-                return;
-            }
-
-            // Calculate time remaining
-            let minutesRemaining = firstEventMinutes - currentMinutes;
-            const hours = Math.floor(minutesRemaining / 60);
-            const minutes = minutesRemaining % 60;
-            const seconds = 60 - sriLankanTime.getUTCSeconds();
-
-            // Update countdown display
-            const hoursElement = countdownElement.querySelector('.countdown-hours');
-            const minutesElement = countdownElement.querySelector('.countdown-minutes');
-            const secondsElement = countdownElement.querySelector('.countdown-seconds');
-
-            if (hoursElement) hoursElement.textContent = hours.toString().padStart(2, '0');
-            if (minutesElement) minutesElement.textContent = minutes.toString().padStart(2, '0');
-            if (secondsElement) secondsElement.textContent = seconds.toString().padStart(2, '0');
-        };
-
-        // Update immediately and then every second
-        updateCountdown();
-        this.countdownInterval = setInterval(updateCountdown, 1000);
-    }
-
     renderAgendaList(agendaData, currentIndex) {
         if (!this.isDisplay1 || !this.agendaList) return;
 
@@ -162,48 +174,15 @@ class ConferenceView {
             const movingTextBanner = document.createElement('div');
             movingTextBanner.className = 'moving-text-container';
             movingTextBanner.innerHTML = `
-                <div class="moving-text">
-                    WELCOME TO SYMPOSIUM ON CLIMATE ACTIONS - 2025
-                    <img src="LOGO.png" alt="Logo" class="moving-logo">
-                    WELCOME TO SYMPOSIUM ON CLIMATE ACTIONS - 2025
-                    <img src="LOGO.png" alt="Logo" class="moving-logo">
-                </div>
+                <div class="moving-text">WELCOME TO SYMPOSIUM ON CLIMATE ACTIONS - 2025</div>
             `;
             this.agendaList.appendChild(movingTextBanner);
-
-            // Add countdown timer if event hasn't started
-            const currentTime = window.conferenceApp?.model?.getCurrentRealTime() || '00:00';
-            const currentMinutes = this.timeToMinutes(currentTime);
-            const firstEventMinutes = agendaData.length > 0 ? this.timeToMinutes(agendaData[0].time) : 0;
-
-            if (currentMinutes < firstEventMinutes) {
-                const countdownContainer = document.createElement('div');
-                countdownContainer.className = 'countdown-container';
-                countdownContainer.innerHTML = `
-                    <div class="countdown-message">Event Starts In</div>
-                    <div class="countdown-timer">
-                        <div class="countdown-unit">
-                            <span class="countdown-number countdown-hours">00</span>
-                            <span class="countdown-label">Hours</span>
-                        </div>
-                        <div class="countdown-unit">
-                            <span class="countdown-number countdown-minutes">00</span>
-                            <span class="countdown-label">Minutes</span>
-                        </div>
-                        <div class="countdown-unit">
-                            <span class="countdown-number countdown-seconds">00</span>
-                            <span class="countdown-label">Seconds</span>
-                        </div>
-                    </div>
-                `;
-                this.agendaList.appendChild(countdownContainer);
-
-                // Start the countdown timer
-                this.startCountdownTimer(agendaData[0].time);
-            }
             
             const eventsContainer = document.createElement('div');
             eventsContainer.className = 'all-events';
+            
+            const currentTime = window.conferenceApp?.model?.getCurrentRealTime() || '00:00';
+            const currentMinutes = this.timeToMinutes(currentTime);
             
             console.log(`Current time: ${currentTime} (${currentMinutes} minutes)`);
             
@@ -211,7 +190,7 @@ class ConferenceView {
                 const eventMinutes = this.timeToMinutes(item.time);
                 const eventEndMinutes = eventMinutes + (item.duration || 0);
                 
-                // Check if event has ended
+                // FIXED LOGIC: Check if event has ended
                 let eventStatus = 'future-event';
                 
                 const eventHasEnded = eventEndMinutes <= currentMinutes;
@@ -467,12 +446,14 @@ class ConferenceView {
     }
 
     cleanup() {
-        // Clear countdown interval
-        if (this.countdownInterval) {
-            clearInterval(this.countdownInterval);
-            this.countdownInterval = null;
-        }
         console.log('Cleaning up view resources...');
+        
+        if (this.highlightInterval) {
+            clearInterval(this.highlightInterval);
+            this.highlightInterval = null;
+        }
+        
+        this.preEventMode = false;
     }
 }
 
@@ -488,5 +469,58 @@ window.showButtons = function() {
     }
 };
 
+window.startPreviewMode = function() {
+    if (window.conferenceApp && window.conferenceApp.view) {
+        window.conferenceApp.view.startPreEventHighlights();
+    }
+};
+
+window.stopPreviewMode = function() {
+    if (window.conferenceApp && window.conferenceApp.view) {
+        window.conferenceApp.view.stopPreEventHighlights();
+    }
+};
+
+window.testHighlight = function(index) {
+    if (window.conferenceApp && window.conferenceApp.view) {
+        window.conferenceApp.view.highlightItem(index || 0);
+        console.log('Test highlight applied to item', index || 0);
+    }
+};
+
 console.log('ConferenceView loaded for Climate Symposium 2025');
-console.log('Simple mode: Current event highlighting with completed tags, seamless logo scroll, countdown timer');
+console.log('Features: Shows ALL events (past/current/future), Title first then time');
+
+/*
+// FORCE past-event class based on real time - runs every second
+setInterval(() => {
+    if (!window.conferenceApp?.model) return;
+    
+    const currentTime = window.conferenceApp.model.getCurrentRealTime();
+    const currentMinutes = parseInt(currentTime.split(':')[0]) * 60 + parseInt(currentTime.split(':')[1]);
+    
+    document.querySelectorAll('.event-item').forEach(eventItem => {
+        const timeElement = eventItem.querySelector('.time');
+        if (!timeElement) return;
+        
+        const timeText = timeElement.textContent.trim();
+        const timeMatch = timeText.match(/(\d{1,2}):(\d{2})\s*(AM|PM)?/i);
+        if (!timeMatch) return;
+        
+        let hours = parseInt(timeMatch[1]);
+        const minutes = parseInt(timeMatch[2]);
+        
+        if (timeMatch[3]) {
+            if (timeMatch[3].toUpperCase() === 'PM' && hours !== 12) hours += 12;
+            if (timeMatch[3].toUpperCase() === 'AM' && hours === 12) hours = 0;
+        }
+        
+        const eventMinutes = hours * 60 + minutes;
+        const eventEndMinutes = eventMinutes + 90; // assume 90 min duration
+        
+        if (eventEndMinutes <= currentMinutes) {
+            eventItem.classList.remove('current-active', 'future-event');
+            eventItem.classList.add('past-event');
+        }
+    });
+}, 1000);*/

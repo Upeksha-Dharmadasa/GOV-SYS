@@ -19,9 +19,6 @@ class ConferenceController {
         this.updateInterval = null;
         this.updateFrequency = 1000; // Update every 1 second
         
-        // Pre-event highlighting state
-        this.preEventHighlightActive = false;
-        
         // Bind event handlers
         this.setupEventHandlers();
         
@@ -66,11 +63,10 @@ class ConferenceController {
      */
     initialize() {
         try {
-            console.log('🌱 Climate Symposium 2025 Real-Time Display System Starting...');
+            console.log('Climate Symposium 2025 Real-Time Display System Starting...');
             console.log('================================================');
-            console.log('📅 Conference Schedule: Day 1 (Sep 30), Day 2 (Oct 1)');
-            console.log(`📊 Loaded ${this.model.getAgendaData().length} agenda items for ${this.model.getCurrentDay()}`);
-            console.log('⏰ Pre-event highlighting: 2 hours before first event (12s intervals)');
+            console.log('Conference Schedule: Day 1 (Sep 30), Day 2 (Oct 1)');
+            console.log(`Loaded ${this.model.getAgendaData().length} agenda items for ${this.model.getCurrentDay()}`);
             
             // Show loading state
             this.view.showLoading();
@@ -81,12 +77,11 @@ class ConferenceController {
             // Start the update timer
             this.startUpdates();
             
-            console.log('✅ Climate Symposium system initialized successfully');
-            console.log(`🕒 Mode: ${this.isRealTimeMode ? 'Real-Time' : 'Manual'}`);
-            console.log('💡 Pre-event highlighting will start automatically 2 hours before first event');
+            console.log('Climate Symposium system initialized successfully');
+            console.log(`Mode: ${this.isRealTimeMode ? 'Real-Time' : 'Manual'}`);
             
         } catch (error) {
-            console.error('❌ Failed to initialize Climate Symposium system:', error);
+            console.error('Failed to initialize Climate Symposium system:', error);
             this.view.showError('Failed to initialize system. Please refresh the page.');
         }
     }
@@ -95,17 +90,17 @@ class ConferenceController {
      * Toggle between real-time and manual mode
      */
     toggleRealTimeMode() {
-        console.log(`🔄 Toggle requested. Current mode: ${this.isRealTimeMode ? 'Real-Time' : 'Manual'}`);
+        console.log(`Toggle requested. Current mode: ${this.isRealTimeMode ? 'Real-Time' : 'Manual'}`);
         
         this.isRealTimeMode = !this.isRealTimeMode;
         
         if (this.isRealTimeMode) {
-            console.log('🔄 Switched to Real-Time Mode');
+            console.log('Switched to Real-Time Mode');
             // Reset to current real-time event
             this.model.resetToRealTime();
             this.manualEventIndex = -1;
         } else {
-            console.log('👋 Switched to Manual Mode');
+            console.log('Switched to Manual Mode');
             // Set manual index to current real-time index or 0 if none
             this.manualEventIndex = Math.max(0, this.model.getCurrentEventIndex());
         }
@@ -113,7 +108,7 @@ class ConferenceController {
         // Force immediate update to reflect mode change
         this.performUpdate();
         
-        console.log(`✅ Mode switch complete. New mode: ${this.isRealTimeMode ? 'Real-Time' : 'Manual'}`);
+        console.log(`Mode switch complete. New mode: ${this.isRealTimeMode ? 'Real-Time' : 'Manual'}`);
     }
 
     /**
@@ -128,7 +123,7 @@ class ConferenceController {
             this.performUpdate();
         }, this.updateFrequency);
         
-        console.log('⏰ Update timer started');
+        console.log('Update timer started');
     }
 
     /**
@@ -138,7 +133,7 @@ class ConferenceController {
         if (this.updateInterval) {
             clearInterval(this.updateInterval);
             this.updateInterval = null;
-            console.log('⏸️ Updates paused (tab hidden)');
+            console.log('Updates paused (tab hidden)');
         }
     }
 
@@ -151,7 +146,7 @@ class ConferenceController {
             this.performUpdate();
             // Restart the timer
             this.startUpdates();
-            console.log('▶️ Updates resumed (tab visible)');
+            console.log('Updates resumed (tab visible)');
         }
     }
 
@@ -169,9 +164,6 @@ class ConferenceController {
             if (this.isRealTimeMode) {
                 // Real-time mode: follow actual schedule
                 hasChanged = this.model.updateRealTimeEvent();
-                
-                // Check pre-event highlighting status
-                this.checkPreEventHighlighting();
             } else {
                 // Manual mode: use manually selected event
                 const currentIndex = this.model.getCurrentEventIndex();
@@ -194,27 +186,8 @@ class ConferenceController {
             this.updateDebugInfo();
             
         } catch (error) {
-            console.error('❌ Error during update:', error);
+            console.error('Error during update:', error);
             this.view.showError('Update failed. System will retry automatically.');
-        }
-    }
-
-    /**
-     * Check and manage pre-event highlighting
-     */
-    checkPreEventHighlighting() {
-        const isInPreEventMode = this.model.isInPreEventMode();
-        
-        // Handle transition to pre-event mode
-        if (isInPreEventMode && !this.preEventHighlightActive) {
-            console.log('🎯 Starting pre-event highlighting coordination');
-            this.preEventHighlightActive = true;
-            // The model handles the highlighting logic, view responds to it
-        } 
-        // Handle transition out of pre-event mode
-        else if (!isInPreEventMode && this.preEventHighlightActive) {
-            console.log('🎯 Stopping pre-event highlighting coordination');
-            this.preEventHighlightActive = false;
         }
     }
 
@@ -241,7 +214,7 @@ class ConferenceController {
             this.view.renderCurrentEvent(currentEvent, status, nextEvent, timeUntilNext);
             
         } catch (error) {
-            console.error('❌ Error updating display:', error);
+            console.error('Error updating display:', error);
             this.view.showError('Display update failed. Please refresh the page.');
         }
     }
@@ -260,7 +233,7 @@ class ConferenceController {
             this.view.updateControls(currentIndex, agendaData.length, this.isRealTimeMode);
             
         } catch (error) {
-            console.error('❌ Error updating controls:', error);
+            console.error('Error updating controls:', error);
         }
     }
 
@@ -285,14 +258,13 @@ class ConferenceController {
                 displayTime: currentEvent ? currentEvent.displayTime : 'None',
                 currentEvent: currentEvent ? currentEvent.title : 'None',
                 mode: this.isRealTimeMode ? 'Real-Time' : 'Manual',
-                status: status.charAt(0).toUpperCase() + status.slice(1),
-                preEventMode: this.model.isInPreEventMode() ? 'Active' : 'Inactive'
+                status: status.charAt(0).toUpperCase() + status.slice(1)
             };
             
             this.view.updateDebugPanel(debugInfo);
             
         } catch (error) {
-            console.error('❌ Error updating debug info:', error);
+            console.error('Error updating debug info:', error);
         }
     }
 
@@ -308,7 +280,7 @@ class ConferenceController {
                 console.log(`Manual navigation: Previous event (${this.manualEventIndex})`);
             }
         } else {
-            console.log('⚠️ Previous button disabled in Real-Time mode');
+            console.log('Previous button disabled in Real-Time mode');
         }
     }
 
@@ -324,7 +296,7 @@ class ConferenceController {
                 console.log(`Manual navigation: Next event (${this.manualEventIndex})`);
             }
         } else {
-            console.log('⚠️ Next button disabled in Real-Time mode');
+            console.log('Next button disabled in Real-Time mode');
         }
     }
 
@@ -338,7 +310,7 @@ class ConferenceController {
             this.performUpdate();
             console.log(`Manual navigation: Jump to event ${index}`);
         } else {
-            console.log('⚠️ Item click disabled in Real-Time mode');
+            console.log('Item click disabled in Real-Time mode');
         }
     }
 
@@ -374,10 +346,10 @@ class ConferenceController {
                 // Toggle control visibility
                 if (this.view.controls && this.view.controls.classList.contains('hidden')) {
                     this.view.showControls();
-                    console.log('👁️ Controls shown');
+                    console.log('Controls shown');
                 } else {
                     this.view.hideControls();
-                    console.log('🙈 Controls hidden');
+                    console.log('Controls hidden');
                 }
                 break;
             case 'd':
@@ -387,19 +359,7 @@ class ConferenceController {
                 const debugPanel = document.getElementById('debugPanel');
                 if (debugPanel) {
                     debugPanel.style.display = debugPanel.style.display === 'none' ? 'block' : 'none';
-                    console.log('🛠️ Debug panel toggled');
-                }
-                break;
-            case 'p':
-            case 'P':
-                e.preventDefault();
-                // Toggle pre-event preview mode (for testing)
-                if (this.model.isInPreEventMode()) {
-                    this.model.stopPreEventHighlighting();
-                    console.log('🔴 Pre-event highlighting stopped (manual)');
-                } else {
-                    this.model.startPreEventHighlighting();
-                    console.log('🟢 Pre-event highlighting started (manual)');
+                    console.log('Debug panel toggled');
                 }
                 break;
         }
@@ -410,7 +370,7 @@ class ConferenceController {
      */
     hideControlButtons() {
         this.view.hideControls();
-        console.log('🙈 Control buttons hidden for production mode');
+        console.log('Control buttons hidden for production mode');
     }
 
     /**
@@ -418,7 +378,7 @@ class ConferenceController {
      */
     showControlButtons() {
         this.view.showControls();
-        console.log('👁️ Control buttons shown for testing mode');
+        console.log('Control buttons shown for testing mode');
     }
 
     /**
@@ -443,7 +403,6 @@ class ConferenceController {
                 this.model.getConferenceStatus() : 'manual',
             nextEvent: this.model.getNextEvent(),
             timeUntilNext: this.model.getTimeUntilNextEvent(),
-            preEventMode: this.model.isInPreEventMode(),
             currentDay: this.model.getCurrentDay()
         };
     }
@@ -469,35 +428,18 @@ class ConferenceController {
             this.view.cleanup();
         }
         
-        console.log('🧹 Climate Symposium system cleanup completed');
+        console.log('Climate Symposium system cleanup completed');
     }
 
     /**
      * Restart the system (useful for error recovery)
      */
     restart() {
-        console.log('🔄 Restarting Climate Symposium system...');
+        console.log('Restarting Climate Symposium system...');
         this.cleanup();
         this.isRealTimeMode = true;
         this.manualEventIndex = -1;
-        this.preEventHighlightActive = false;
         this.initialize();
-    }
-
-    /**
-     * Force start pre-event highlighting (for testing)
-     */
-    startPreEventHighlighting() {
-        this.model.startPreEventHighlighting();
-        console.log('🎯 Pre-event highlighting force started');
-    }
-
-    /**
-     * Force stop pre-event highlighting (for testing)
-     */
-    stopPreEventHighlighting() {
-        this.model.stopPreEventHighlighting();
-        console.log('🎯 Pre-event highlighting force stopped');
     }
 }
 
@@ -505,37 +447,20 @@ class ConferenceController {
 window.getClimateStatus = function() {
     if (window.conferenceApp) {
         const status = window.conferenceApp.getSystemStatus();
-        console.log('🌱 Climate Symposium 2025 System Status:');
+        console.log('Climate Symposium 2025 System Status:');
         console.log('====================================');
-        console.log(`🕒 Current Time: ${status.currentTime} (Sri Lankan)`);
-        console.log(`🎯 Conference Status: ${status.conferenceStatus}`);
-        console.log(`📅 Current Day: ${status.currentDay}`);
-        console.log(`📍 Current Event: ${status.currentEvent ? status.currentEvent.title : 'None'}`);
-        console.log(`⭐ Next Event: ${status.nextEvent ? status.nextEvent.title : 'None'}`);
-        console.log(`⏱️ Time Until Next: ${status.timeUntilNext > 0 ? status.timeUntilNext + ' minutes' : 'N/A'}`);
-        console.log(`🔄 System Running: ${status.isRunning ? 'Yes' : 'No'}`);
-        console.log(`🎨 Pre-Event Mode: ${status.preEventMode ? 'Active' : 'Inactive'}`);
+        console.log(`Current Time: ${status.currentTime} (Sri Lankan)`);
+        console.log(`Conference Status: ${status.conferenceStatus}`);
+        console.log(`Current Day: ${status.currentDay}`);
+        console.log(`Current Event: ${status.currentEvent ? status.currentEvent.title : 'None'}`);
+        console.log(`Next Event: ${status.nextEvent ? status.nextEvent.title : 'None'}`);
+        console.log(`Time Until Next: ${status.timeUntilNext > 0 ? status.timeUntilNext + ' minutes' : 'N/A'}`);
+        console.log(`System Running: ${status.isRunning ? 'Yes' : 'No'}`);
         console.log('====================================');
         return status;
     } else {
-        console.log('⚠️ Climate Symposium system not ready yet. Please wait for initialization.');
+        console.log('Climate Symposium system not ready yet. Please wait for initialization.');
         return null;
-    }
-};
-
-window.startClimatePreview = function() {
-    if (window.conferenceApp) {
-        window.conferenceApp.startPreEventHighlighting();
-    } else {
-        console.log('⚠️ System not ready yet.');
-    }
-};
-
-window.stopClimatePreview = function() {
-    if (window.conferenceApp) {
-        window.conferenceApp.stopPreEventHighlighting();
-    } else {
-        console.log('⚠️ System not ready yet.');
     }
 };
 
@@ -543,8 +468,7 @@ window.restartClimateSystem = function() {
     if (window.conferenceApp) {
         window.conferenceApp.restart();
     } else {
-        console.log('🚀 Starting Climate Symposium system for the first time...');
-        // Will be initialized by app.js
+        console.log('Starting Climate Symposium system for the first time...');
     }
 };
 
@@ -552,13 +476,11 @@ window.setClimateDay = function(dayName) {
     if (window.conferenceApp) {
         window.conferenceApp.model.setCurrentDay(dayName);
         window.conferenceApp.view.updateConferenceDay(dayName);
-        console.log(`📅 Climate Symposium day updated to: ${dayName}`);
+        console.log(`Climate Symposium day updated to: ${dayName}`);
     } else {
-        console.log('⚠️ System not ready yet.');
+        console.log('System not ready yet.');
     }
 };
 
 console.log('ConferenceController loaded for Climate Symposium 2025');
-console.log('🎯 Pre-event highlighting: Automatic (2h before) + Manual controls');
-console.log('⌨️ Keyboard shortcuts: P (preview toggle), H (controls), D (debug)');
-console.log('💡 Console commands: getClimateStatus(), startClimatePreview(), stopClimatePreview()');
+console.log('Simple mode: Current event highlighting only');
