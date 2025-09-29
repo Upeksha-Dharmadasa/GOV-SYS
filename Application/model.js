@@ -215,6 +215,8 @@ class ConferenceModel {
             ]
         };
 
+        // Using exact timetable (no testing compression)
+
         // Current state
         this.currentEventIndex = -1;
         this.isAutoMode = false;
@@ -225,7 +227,12 @@ class ConferenceModel {
     }
 
     detectCurrentDay() {
-        const today = new Date().toISOString().split('T')[0];
+        // Use local date (not UTC) to avoid off-by-one day issues
+        const now = new Date();
+        const yyyy = now.getFullYear();
+        const mm = String(now.getMonth() + 1).padStart(2, '0');
+        const dd = String(now.getDate()).padStart(2, '0');
+        const today = `${yyyy}-${mm}-${dd}`;
         
         console.log(`Today's date: ${today}`);
         console.log(`Conference dates:`, this.conferenceDates);
@@ -334,22 +341,24 @@ class ConferenceModel {
 
     getCurrentRealTime() {
         const now = new Date();
-        const sriLankanTime = new Date(now.getTime() + (5.5 * 60 * 60 * 1000));
-        return sriLankanTime.getUTCHours().toString().padStart(2, '0') + ':' + 
-               sriLankanTime.getUTCMinutes().toString().padStart(2, '0');
+        return now.getHours().toString().padStart(2, '0') + ':' + 
+               now.getMinutes().toString().padStart(2, '0');
     }
 
     getCurrentRealTimeWithSeconds() {
         const now = new Date();
-        const sriLankanTime = new Date(now.getTime() + (5.5 * 60 * 60 * 1000));
-        return sriLankanTime.getUTCHours().toString().padStart(2, '0') + ':' + 
-               sriLankanTime.getUTCMinutes().toString().padStart(2, '0') + ':' + 
-               sriLankanTime.getUTCSeconds().toString().padStart(2, '0');
+        return now.getHours().toString().padStart(2, '0') + ':' + 
+               now.getMinutes().toString().padStart(2, '0') + ':' + 
+               now.getSeconds().toString().padStart(2, '0');
     }
 
     findCurrentRealTimeEvent() {
-        // CRITICAL: CHECK DATE FIRST BEFORE CHECKING TIME
-        const today = new Date().toISOString().split('T')[0];
+        // CRITICAL: CHECK DATE FIRST BEFORE CHECKING TIME (use local date)
+        const nowLocal = new Date();
+        const yyyyL = nowLocal.getFullYear();
+        const mmL = String(nowLocal.getMonth() + 1).padStart(2, '0');
+        const ddL = String(nowLocal.getDate()).padStart(2, '0');
+        const today = `${yyyyL}-${mmL}-${ddL}`;
         const conferenceDate = this.conferenceDates[this.currentDay];
         
         console.log(`DATE CHECK: Today=${today}, ConferenceDate=${conferenceDate}`);
@@ -400,7 +409,12 @@ class ConferenceModel {
             };
         }
         
-        if (currentMinutes >= midnightMinutes || (currentMinutes < 300 && currentMinutes >= 0)) {
+        // If current time is after the end of the last event, mark as completed
+        const lastEvent = agenda[agenda.length - 1];
+        const lastStart = this.timeToMinutes(lastEvent.time);
+        let lastEnd = lastStart + (lastEvent.duration || 0);
+        if (lastEnd > midnightMinutes) lastEnd = midnightMinutes;
+        if (currentMinutes >= lastEnd) {
             return {
                 eventIndex: -1,
                 status: 'completed',
@@ -426,18 +440,10 @@ class ConferenceModel {
             }
         }
         
-        let mostRecentIndex = -1;
-        for (let i = agenda.length - 1; i >= 0; i--) {
-            const eventMinutes = this.timeToMinutes(agenda[i].time);
-            if (eventMinutes <= currentMinutes) {
-                mostRecentIndex = i;
-                break;
-            }
-        }
-        
+        // Between events: no current active item should be highlighted
         return {
-            eventIndex: mostRecentIndex,
-            status: 'active',
+            eventIndex: -1,
+            status: 'waiting',
             message: 'Between events'
         };
     }

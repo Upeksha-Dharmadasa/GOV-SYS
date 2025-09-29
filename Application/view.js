@@ -101,21 +101,36 @@ class ConferenceView {
             const countdownElement = document.querySelector('.countdown-container');
             if (!countdownElement) return;
 
-            // Get current time
+            // Get current local time
             const now = new Date();
-            const sriLankanTime = new Date(now.getTime() + (5.5 * 60 * 60 * 1000));
-            const currentMinutes = sriLankanTime.getUTCHours() * 60 + sriLankanTime.getUTCMinutes();
+            const currentMinutes = now.getHours() * 60 + now.getMinutes();
             
             // Get first event time in minutes
             const firstEventMinutes = this.timeToMinutes(firstEventTime);
             
             // If event has started or passed, hide countdown
             if (currentMinutes >= firstEventMinutes) {
-                countdownElement.classList.add('hidden');
+                // Add fade-out animation before hiding
+                countdownElement.classList.add('fade-out');
+                const finalizeHide = () => {
+                    countdownElement.classList.add('hidden');
+                    countdownElement.classList.remove('fade-out');
+                    // Force an immediate real-time update to reflect the new active event
+                    try {
+                        if (window.conferenceApp && typeof window.conferenceApp.performRealTimeUpdate === 'function') {
+                            window.conferenceApp.performRealTimeUpdate();
+                        }
+                    } catch (e) {
+                        console.warn('Failed to trigger immediate update after countdown hide:', e);
+                    }
+                };
                 if (this.countdownInterval) {
                     clearInterval(this.countdownInterval);
                     this.countdownInterval = null;
                 }
+                // Use transitionend if available, fallback to timeout
+                countdownElement.addEventListener('transitionend', finalizeHide, { once: true });
+                setTimeout(finalizeHide, 600);
                 return;
             }
 
@@ -123,7 +138,7 @@ class ConferenceView {
             let minutesRemaining = firstEventMinutes - currentMinutes;
             const hours = Math.floor(minutesRemaining / 60);
             const minutes = minutesRemaining % 60;
-            const seconds = 60 - sriLankanTime.getUTCSeconds();
+            const seconds = 59 - now.getSeconds();
 
             // Update countdown display
             const hoursElement = countdownElement.querySelector('.countdown-hours');
@@ -251,6 +266,18 @@ class ConferenceView {
                 const pastEventCount = document.querySelectorAll('.past-event').length;
                 console.log(`Total past events rendered: ${pastEventCount}`);
             }, 100);
+
+            // Smoothly scroll the current active event into view (if any)
+            setTimeout(() => {
+                try {
+                    const activeEl = this.agendaList.querySelector('.event-item.current-active');
+                    if (activeEl && typeof activeEl.scrollIntoView === 'function') {
+                        activeEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                } catch (e) {
+                    console.warn('Failed to auto-scroll to active event:', e);
+                }
+            }, 150);
             
         } catch (error) {
             console.error('Error rendering agenda list:', error);
