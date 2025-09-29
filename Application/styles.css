@@ -1,43 +1,54 @@
 /* ============================================================================
-   CSS STYLES - CLIMATE SYMPOSIUM 2025 - WORKING CURRENT EVENT HIGHLIGHT
+   CSS STYLES - CLIMATE SYMPOSIUM 2025 - FINAL WORKING VERSION
    ============================================================================ */
 
 /* Import Poppins font */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
 
-/* Reset all default margins and padding for clean design */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Main body styling with visible animated background */
+/* BACKGROUND WITH ANIMATION */
 body {
     font-family: 'Poppins', sans-serif;
     background: linear-gradient(45deg, #087F8D 0%, #20ADC1 25%, #7ED0DC 50%, #20ADC1 75%, #087F8D 100%);
     background-size: 400% 400%;
-    animation: gradientShift 6s ease-in-out infinite;
+    animation: gradientFlow 15s ease infinite;
     height: 100vh;
     overflow: hidden;
+    position: relative;
 }
 
-/* Visible gradient animation */
-@keyframes gradientShift {
+@keyframes gradientFlow {
     0% { background-position: 0% 50%; }
-    25% { background-position: 100% 50%; }
-    50% { background-position: 50% 100%; }
-    75% { background-position: 0% 100%; }
+    50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
 }
 
-/* Container to hold both screens side by side */
+/* Background image at bottom */
+body::after {
+    content: '';
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    background: url('Background.PNG') center bottom / cover no-repeat;
+    opacity: 0.6;
+    z-index: 1;
+    pointer-events: none;
+    mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 50%, rgba(0,0,0,0) 100%);
+    -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 50%, rgba(0,0,0,0) 100%);
+}
+
 .container {
     display: flex;
     height: 100vh;
 }
 
-/* Base styling for each screen */
 .screen {
     flex: 1;
     padding: 0;
@@ -46,7 +57,6 @@ body {
     position: relative;
 }
 
-/* Screen 1 (Left) - Agenda List Display */
 .screen-1 {
     background: transparent;
     color: white;
@@ -55,7 +65,6 @@ body {
     height: 100vh;
 }
 
-/* Screen 2 (Right) - Current Item Details */
 .screen-2 {
     background: transparent;
     color: white;
@@ -64,29 +73,23 @@ body {
     height: 100vh;
 }
 
-/* Remove particles containers (no particles) */
 .screen-1 #tsparticles-left,
 .screen-2 #tsparticles-right {
     display: none;
 }
 
-/* Content containers */
 .screen-1 .agenda-list,
 .screen-2 .current-detail {
     position: relative;
     z-index: 2;
 }
 
-/* ============================================================================
-   HEADER AND AGENDA STYLING
-   ============================================================================ */
-
-/* Header card styling for Screen 1 */
+/* HEADER */
 .agenda-header {
     background: linear-gradient(135deg, #f0f0f0 0%, #ffffff 100%);
     border-radius: clamp(15px, 2vw, 25px);
     padding: clamp(20px, 3vw, 40px);
-    margin-bottom: clamp(20px, 2.5vw, 30px);
+    margin-bottom: clamp(40px, 5vw, 80px);
     display: flex;
     align-items: flex-start;
     position: relative;
@@ -96,47 +99,32 @@ body {
     flex-shrink: 0;
 }
 
-/* ============================================================================
-   MOVING TEXT BANNER
-   ============================================================================ */
-
-/* Moving text container */
+/* MOVING TEXT BANNER */
 .moving-text-container {
     width: 100%;
-    height: clamp(60px, 6vh, 100px);
-    background: rgba(255, 255, 255, 0.1);
-    margin-bottom: clamp(25px, 3vw, 40px);
+    height: clamp(80px, 8vh, 120px);
+    margin-bottom: clamp(50px, 6vw, 100px);
     overflow: hidden;
     position: relative;
-    border-radius: clamp(10px, 1.5vw, 20px);
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
     display: flex;
     align-items: center;
 }
 
-/* Moving text content */
 .moving-text {
     font-family: 'Poppins', sans-serif;
-    font-size: clamp(1.2em, 2.2vw, 3.5em);
+    font-size: clamp(2.5em, 4.5vw, 7em);
     font-weight: 400;
     color: #000;
     white-space: nowrap;
-    animation: moveText 20s linear infinite;
+    animation: moveTextSlowly 35s linear infinite;
     line-height: 1;
 }
 
-/* Moving text animation */
-@keyframes moveText {
-    0% {
-        transform: translateX(100%);
-    }
-    100% {
-        transform: translateX(-100%);
-    }
+@keyframes moveTextSlowly {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
 }
 
-/* Logo styling */
 .conference-logo {
     flex-shrink: 0;
     margin-right: clamp(20px, 3vw, 50px);
@@ -147,14 +135,12 @@ body {
     height: auto;
 }
 
-/* Event title section */
 .event-title-section {
     flex: 1;
     text-align: left;
     position: relative;
 }
 
-/* Event title - ONE LINE, PROPER SIZE */
 .event-title {
     color: #087F8D;
     font-size: clamp(1.2em, 2.5vw, 3.5em);
@@ -168,7 +154,6 @@ body {
     white-space: nowrap;
 }
 
-/* Day indicator */
 .event-day {
     background: #20ADC1;
     color: white;
@@ -185,11 +170,7 @@ body {
     font-family: 'Poppins', sans-serif;
 }
 
-/* ============================================================================
-   ALL EVENTS LIST - PREVENT CROPPING
-   ============================================================================ */
-
-/* All events list container - EXTRA PADDING TO PREVENT CROPPING */
+/* EVENTS LIST - NO SCROLLBAR */
 .all-events {
     flex: 1;
     position: relative;
@@ -200,30 +181,26 @@ body {
     margin: 0;
 }
 
-/* Custom scrollbar */
+/* HIDE SCROLLBAR COMPLETELY */
 .all-events::-webkit-scrollbar {
-    width: 8px;
+    display: none;
 }
 
-.all-events::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
+.all-events {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
 
-.all-events::-webkit-scrollbar-thumb {
-    background: rgba(32, 173, 193, 0.6);
-    border-radius: 10px;
+.agenda-list::-webkit-scrollbar {
+    display: none;
 }
 
-.all-events::-webkit-scrollbar-thumb:hover {
-    background: rgba(32, 173, 193, 0.8);
+.agenda-list {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
 
-/* ============================================================================
-   EVENT CARDS - CLEAR CURRENT EVENT HIGHLIGHTING
-   ============================================================================ */
-
-/* Default event item styling */
+/* EVENT CARDS - CRITICAL: overflow must be visible for ::after tag */
 .event-item {
     background: white;
     color: #333;
@@ -233,12 +210,12 @@ body {
     position: relative;
     border-radius: clamp(15px, 2vw, 25px);
     box-shadow: 0 15px 50px rgba(0, 0, 0, 0.08);
-    overflow: hidden;
+    overflow: visible !important;  /* CRITICAL FOR TAG */
     min-height: clamp(100px, 10vh, 140px);
     z-index: 1;
 }
 
-/* CURRENT EVENT - #087F8D BACKGROUND, LARGE HEIGHT, BIG FONTS */
+/* CURRENT EVENT */
 .event-item.current-active {
     background: #087F8D !important;
     color: white !important;
@@ -246,22 +223,9 @@ body {
     margin-bottom: clamp(60px, 7vw, 80px) !important;
     z-index: 10 !important;
     box-shadow: 0 30px 80px rgba(8, 127, 141, 0.4) !important;
-    animation: currentEventPulse 3s ease-in-out infinite alternate !important;
     transform: scale(1.02) !important;
 }
 
-@keyframes currentEventPulse {
-    from { 
-        box-shadow: 0 25px 70px rgba(8, 127, 141, 0.3);
-        transform: scale(1.02);
-    }
-    to { 
-        box-shadow: 0 35px 90px rgba(8, 127, 141, 0.5);
-        transform: scale(1.04);
-    }
-}
-
-/* CURRENT EVENT TITLE - LARGE WHITE TEXT */
 .event-item.current-active .title {
     color: white !important;
     font-weight: 800 !important;
@@ -270,60 +234,61 @@ body {
     margin-bottom: clamp(15px, 2.5vw, 25px) !important;
 }
 
-/* CURRENT EVENT TIME - LARGE TEAL TEXT */
 .event-item.current-active .time {
-    color: #7ED0DC !important;
+    color: white !important;
     font-weight: 700 !important;
     font-size: clamp(1.6em, 2.8vw, 4em) !important;
     text-shadow: 1px 1px 4px rgba(0,0,0,0.4) !important;
 }
 
-/* Past events styling */
+/* PAST EVENTS - LIGHTER BACKGROUND */
 .event-item.past-event {
-    opacity: 0.7;
-    background: #f8f9fa;
-    color: #6c757d;
+    opacity: 0.75;
+    background: #f8f9fa !important;
+    color: #6c757d !important;
 }
 
-.event-item.past-event .title {
-    color: #6c757d;
+/* COMPLETED TAG - GRADIENT BACKGROUND, POPPINS FONT */
+.event-item.past-event::after {
+    content: 'Completed' !important;
+    display: block !important;
+    position: absolute !important;
+    top: clamp(15px, 2vw, 25px) !important;
+    right: clamp(15px, 2vw, 25px) !important;
+    background: linear-gradient(135deg, #20ADC1 0%, #087F8D 100%) !important;
+    color: white !important;
+    padding: clamp(8px, 1.2vw, 12px) clamp(15px, 2vw, 20px) !important;
+    border-radius: clamp(8px, 1.2vw, 12px) !important;
+    font-size: clamp(0.8em, 1.2vw, 1.4em) !important;
+    font-weight: 600 !important;
+    text-transform: capitalize !important;
+    letter-spacing: 0.5px !important;
+    z-index: 100 !important;
+    font-family: 'Poppins', sans-serif !important;
+    box-shadow: 0 4px 12px rgba(32, 173, 193, 0.4) !important;
 }
 
-.event-item.past-event .time {
-    color: #adb5bd;
+/* Responsive for mobile */
+@media (max-width: 768px) {
+    .event-item.past-event::after {
+        font-size: clamp(0.6em, 3vw, 1em) !important;
+        padding: clamp(5px, 1.5vw, 8px) clamp(10px, 2.5vw, 15px) !important;
+    }
 }
 
-/* Future events styling */
+/* FUTURE EVENTS */
 .event-item.future-event {
     background: white;
     color: #333;
 }
 
-.event-item.future-event .title {
-    color: #333;
-}
-
-.event-item.future-event .time {
-    color: #087F8D;
-}
-
-/* PRE-EVENT HIGHLIGHT - GOLDEN COLOR FOR PREVIEW MODE */
+/* PREVIEW HIGHLIGHT */
 .event-item.highlight-preview {
     background: linear-gradient(135deg, rgba(255, 193, 7, 0.95) 0%, rgba(255, 152, 0, 0.95) 100%) !important;
     box-shadow: 0 25px 70px rgba(255, 193, 7, 0.3) !important;
-    animation: previewPulse 2s infinite alternate;
     min-height: clamp(160px, 16vh, 200px) !important;
     margin: clamp(40px, 5vw, 60px) 15px !important;
     z-index: 15 !important;
-}
-
-@keyframes previewPulse {
-    from { 
-        box-shadow: 0 22px 65px rgba(255, 193, 7, 0.25);
-    }
-    to { 
-        box-shadow: 0 30px 80px rgba(255, 193, 7, 0.4);
-    }
 }
 
 .event-item.highlight-preview .title {
@@ -340,13 +305,12 @@ body {
     font-weight: 600 !important;
 }
 
-/* When highlighting is active, make other cards semi-transparent for glass effect */
 .all-events:has(.highlight-preview) .event-item:not(.highlight-preview) {
     background: rgba(255, 255, 255, 0.58) !important;
     backdrop-filter: blur(2px);
 }
 
-/* TITLE FIRST, THEN TIME - PROPER Z-INDEX */
+/* EVENT TEXT */
 .event-item .title {
     font-size: clamp(1.2em, 2.2vw, 3em);
     font-weight: 600;
@@ -368,83 +332,15 @@ body {
     z-index: 2;
 }
 
-/* ============================================================================
-   SCREEN 2 (DETAILS) STYLING
-   ============================================================================ */
-
-/* Container for current item details on Screen 2 */
-.current-detail {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: clamp(20px, 3vw, 50px);
-    position: relative;
-    z-index: 2;
-}
-
-/* Large time display for current item */
-.current-time {
-    font-size: clamp(3em, 6vw, 12em);
-    font-weight: 800;
-    color: white;
-    margin-bottom: clamp(20px, 3vw, 40px);
-    text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
-    position: relative;
-    z-index: 3;
-    font-family: 'Poppins', sans-serif;
-}
-
-/* Large title display for current item */
-.current-title {
-    font-size: clamp(2em, 4vw, 8em);
-    font-weight: 700;
-    margin-bottom: clamp(20px, 3vw, 40px);
-    line-height: 1.3;
-    color: #ffffff;
-    position: relative;
-    z-index: 3;
-    font-family: 'Poppins', sans-serif;
-}
-
-/* Description text for current item */
-.current-description {
-    font-size: clamp(1.2em, 2.2vw, 4.5em);
-    line-height: 1.6;
-    color: rgba(255, 255, 255, 0.9);
-    max-width: 85%;
-    position: relative;
-    z-index: 3;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 400;
-}
-
-/* ============================================================================
-   STATUS AND CONTROL ELEMENTS
-   ============================================================================ */
-
-/* Live indicator - REMOVED */
-.status-indicator {
-    display: none;
-}
-
-/* Current time clock display - REMOVED */
-.clock {
-    display: none;
-}
-
-/* Control buttons - COMPLETELY REMOVED */
-.controls {
-    display: none !important;
-}
-
+/* HIDDEN ELEMENTS */
+.status-indicator,
+.clock,
+.controls,
 .btn {
     display: none !important;
 }
 
-/* Debug panel - HIDDEN BY DEFAULT */
+/* DEBUG PANEL */
 .debug-panel {
     position: fixed;
     bottom: clamp(70px, 8vh, 120px);
@@ -461,90 +357,6 @@ body {
     border: 2px solid #20ADC1;
 }
 
-/* ============================================================================
-   STATUS MESSAGES AND WAITING STATES
-   ============================================================================ */
-
-/* Status messages for no current event */
-.no-current-event {
-    text-align: center;
-    color: rgba(255, 255, 255, 0.9);
-    font-size: clamp(1.5em, 3vw, 6em);
-    animation: fadeInOut 3s infinite;
-    position: relative;
-    z-index: 3;
-    font-family: 'Poppins', sans-serif;
-}
-
-.no-current-event h2 {
-    font-size: clamp(1.8em, 3.5vw, 7em);
-    margin-bottom: clamp(15px, 2.5vw, 30px);
-    color: #ffffff;
-    font-weight: 700;
-    font-family: 'Poppins', sans-serif;
-}
-
-.no-current-event p {
-    font-size: clamp(1.2em, 2.2vw, 4.5em);
-    margin-bottom: clamp(20px, 3vw, 40px);
-    font-weight: 400;
-    font-family: 'Poppins', sans-serif;
-}
-
-@keyframes fadeInOut {
-    0%, 100% { opacity: 0.6; }
-    50% { opacity: 1; }
-}
-
-/* Next event preview styling */
-.next-event-preview {
-    margin-top: clamp(25px, 4vw, 50px);
-    padding: clamp(15px, 3vw, 30px);
-    background: rgba(32, 173, 193, 0.2);
-    border-radius: clamp(12px, 2vw, 20px);
-    text-align: center;
-    position: relative;
-    z-index: 3;
-    border: 2px solid rgba(32, 173, 193, 0.3);
-    font-family: 'Poppins', sans-serif;
-}
-
-.next-event-preview h3 {
-    color: #7ED0DC;
-    margin-bottom: clamp(8px, 1.5vw, 15px);
-    font-size: clamp(1.3em, 2.5vw, 5em);
-    font-weight: 600;
-}
-
-/* Conference info styling */
-.conference-info {
-    background: rgba(32, 173, 193, 0.2);
-    padding: clamp(15px, 3vw, 30px);
-    border-radius: clamp(12px, 2vw, 20px);
-    margin-top: clamp(15px, 2.5vw, 25px);
-    border: 1px solid rgba(32, 173, 193, 0.3);
-    font-family: 'Poppins', sans-serif;
-}
-
-.conference-info h4 {
-    color: #7ED0DC;
-    margin-bottom: clamp(8px, 1.5vw, 15px);
-    font-size: clamp(1.2em, 2.2vw, 4.5em);
-    font-weight: 600;
-}
-
-.conference-info p {
-    font-size: clamp(1em, 1.8vw, 3.5em);
-    line-height: 1.4;
-    font-weight: 400;
-}
-
-/* Hide controls class */
-.controls.hidden {
-    display: none !important;
-}
-
-/* Scrollable container for agenda list */
 .agenda-list {
     flex: 1;
     overflow-y: auto;
@@ -554,53 +366,19 @@ body {
     height: 100%;
 }
 
-.agenda-list::-webkit-scrollbar {
-    width: clamp(4px, 0.8vw, 10px);
-}
-
-.agenda-list::-webkit-scrollbar-track {
-    background: rgba(255,255,255,0.1);
-    border-radius: clamp(2px, 0.5vw, 6px);
-}
-
-.agenda-list::-webkit-scrollbar-thumb {
-    background: rgba(32, 173, 193, 0.5);
-    border-radius: clamp(2px, 0.5vw, 6px);
-}
-
-.agenda-list::-webkit-scrollbar-thumb:hover {
-    background: rgba(32, 173, 193, 0.7);
-}
-
-/* ============================================================================
-   RESPONSIVE BREAKPOINTS
-   ============================================================================ */
-
-/* Large displays */
-@media (min-width: 2560px) {
-    .event-title {
-        font-size: clamp(2em, 3.2vw, 5em);
-    }
-    
-    .event-item.current-active .title {
-        font-size: clamp(3em, 4.5vw, 7em) !important;
-    }
-    
-    .event-item.current-active .time {
-        font-size: clamp(2em, 3.5vw, 5em) !important;
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .event-item.past-event::after {
+        font-size: clamp(0.6em, 3vw, 1em) !important;
+        padding: clamp(5px, 1.5vw, 8px) clamp(10px, 2.5vw, 15px) !important;
     }
 }
 
-/* Medium displays */
-@media (max-width: 1920px) {
-    .screen-1, .screen-2 {
-        padding: clamp(15px, 2vw, 40px);
-    }
-}
-
-/* Low height devices */
-@media (max-height: 600px) {
-    .event-item.current-active {
-        min-height: clamp(150px, 15vh, 200px) !important;
+@media (max-width: 480px) {
+    .event-item.past-event::after {
+        font-size: clamp(0.5em, 4vw, 0.9em) !important;
+        padding: clamp(4px, 1vw, 6px) clamp(8px, 2vw, 12px) !important;
+        top: clamp(10px, 2vw, 15px) !important;
+        right: clamp(10px, 2vw, 15px) !important;
     }
 }

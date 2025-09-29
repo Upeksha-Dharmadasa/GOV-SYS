@@ -28,23 +28,17 @@ class ConferenceView {
         this.preEventMode = false;
         this.highlightInterval = null;
         this.currentHighlightIndex = 0;
-        this.highlightDuration = 12000; // 12 seconds per item
+        this.highlightDuration = 12000;
         
         // Current day for the conference
         this.currentDay = 'Day 1';
         
         console.log(`View initialized for ${this.isDisplay1 ? 'Display 1 (Agenda)' : 'Display 2 (Details)'}`);
         
-        // Hide debug panel by default for production
         this.hideDebugPanel();
-        
-        // Set up periodic day sync
         this.setupDaySync();
     }
 
-    /**
-     * Hide debug panel by default
-     */
     hideDebugPanel() {
         const debugPanel = document.getElementById('debugPanel');
         if (debugPanel) {
@@ -52,9 +46,6 @@ class ConferenceView {
         }
     }
 
-    /**
-     * Start pre-event highlight mode (called 2 hours before event)
-     */
     startPreEventHighlights() {
         if (!this.isDisplay1) return;
         
@@ -66,46 +57,34 @@ class ConferenceView {
             clearInterval(this.highlightInterval);
         }
         
-        // Start highlighting immediately
         this.doHighlight();
         
-        // Continue highlighting every 12 seconds
         this.highlightInterval = setInterval(() => {
             this.doHighlight();
         }, this.highlightDuration);
     }
 
-    /**
-     * Do the actual highlighting of agenda items
-     */
     doHighlight() {
         const agenda = window.conferenceApp?.model?.getAgendaData() || [];
         if (agenda.length === 0) return;
         
-        // Remove all existing highlights
         const allEvents = document.querySelectorAll('.event-item');
         allEvents.forEach(element => {
             element.classList.remove('highlight-preview');
         });
         
-        // Find and highlight the current item
         const eventItems = document.querySelectorAll('.event-item');
         if (eventItems[this.currentHighlightIndex]) {
             eventItems[this.currentHighlightIndex].classList.add('highlight-preview');
             
-            // Log which item is being highlighted
             const eventTitle = eventItems[this.currentHighlightIndex].querySelector('.title')?.textContent || 'Unknown';
             const eventTime = eventItems[this.currentHighlightIndex].querySelector('.time')?.textContent || 'Unknown';
             console.log(`Highlighting: ${eventTime} - ${eventTitle}`);
         }
         
-        // Move to next item for next highlight cycle
         this.currentHighlightIndex = (this.currentHighlightIndex + 1) % agenda.length;
     }
 
-    /**
-     * Stop pre-event highlight mode
-     */
     stopPreEventHighlights() {
         console.log('=== STOPPING PRE-EVENT HIGHLIGHT MODE ===');
         this.preEventMode = false;
@@ -115,16 +94,12 @@ class ConferenceView {
             this.highlightInterval = null;
         }
         
-        // Remove all highlights
         const allEvents = document.querySelectorAll('.event-item');
         allEvents.forEach(element => {
             element.classList.remove('highlight-preview');
         });
     }
 
-    /**
-     * Highlight specific item by index (called from model)
-     */
     highlightItem(index) {
         if (!this.isDisplay1) return;
         
@@ -132,9 +107,6 @@ class ConferenceView {
         this.doHighlight();
     }
 
-    /**
-     * Set up periodic day synchronization
-     */
     setupDaySync() {
         setInterval(() => {
             if (window.conferenceApp && window.conferenceApp.model) {
@@ -159,9 +131,6 @@ class ConferenceView {
         }, 2000);
     }
 
-    /**
-     * Update day display in header
-     */
     updateDayInHeader(newDay) {
         const dayElement = document.querySelector('.event-day');
         if (dayElement && dayElement.textContent !== newDay) {
@@ -170,38 +139,25 @@ class ConferenceView {
         }
     }
 
-    /**
-     * Set current day
-     */
     setCurrentDay(day) {
         this.currentDay = day;
     }
 
-    /**
-     * Get logo HTML (using LOGO.png)
-     */
     getLogoHtml() {
         return `<img src="LOGO.png" alt="Climate Symposium 2025" style="max-width: 100%; height: auto; max-height: 150px;">`;
     }
 
-    /**
-     * Convert time string to minutes since midnight
-     */
     timeToMinutes(timeStr) {
         const [hours, minutes] = timeStr.split(':').map(Number);
         return hours * 60 + minutes;
     }
 
-    /**
-     * Render agenda list for Display 1 - SHOWS ALL EVENTS (PAST, CURRENT, FUTURE)
-     */
     renderAgendaList(agendaData, currentIndex) {
         if (!this.isDisplay1 || !this.agendaList) return;
 
         try {
             this.agendaList.innerHTML = '';
             
-            // Create header section
             const headerSection = document.createElement('div');
             headerSection.className = 'agenda-header';
             headerSection.innerHTML = `
@@ -215,7 +171,6 @@ class ConferenceView {
             `;
             this.agendaList.appendChild(headerSection);
             
-            // Create moving text banner
             const movingTextBanner = document.createElement('div');
             movingTextBanner.className = 'moving-text-container';
             movingTextBanner.innerHTML = `
@@ -223,32 +178,37 @@ class ConferenceView {
             `;
             this.agendaList.appendChild(movingTextBanner);
             
-            // Create scrollable events container
             const eventsContainer = document.createElement('div');
             eventsContainer.className = 'all-events';
             
-            // Get current time to determine event status
             const currentTime = window.conferenceApp?.model?.getCurrentRealTime() || '00:00';
             const currentMinutes = this.timeToMinutes(currentTime);
             
-            // Show ALL events with proper status - TITLE FIRST, TIME SECOND
+            console.log(`Current time: ${currentTime} (${currentMinutes} minutes)`);
+            
             agendaData.forEach((item, index) => {
                 const eventMinutes = this.timeToMinutes(item.time);
                 const eventEndMinutes = eventMinutes + (item.duration || 0);
                 
-                // Determine event status
+                // FIXED LOGIC: Check if event has ended
                 let eventStatus = 'future-event';
-                if (index === currentIndex) {
-                    eventStatus = 'current-active';
-                } else if (eventEndMinutes <= currentMinutes) {
+                
+                const eventHasEnded = eventEndMinutes <= currentMinutes;
+                const eventIsActive = eventMinutes <= currentMinutes && currentMinutes < eventEndMinutes;
+                
+                if (eventHasEnded) {
                     eventStatus = 'past-event';
-                } else if (eventMinutes <= currentMinutes && currentMinutes < eventEndMinutes) {
+                    console.log(`Event ${index}: "${item.title}" is PAST (ended at ${eventEndMinutes} min)`);
+                } else if (eventIsActive || index === currentIndex) {
                     eventStatus = 'current-active';
+                    console.log(`Event ${index}: "${item.title}" is CURRENT`);
+                } else {
+                    eventStatus = 'future-event';
+                    console.log(`Event ${index}: "${item.title}" is FUTURE (starts at ${eventMinutes} min)`);
                 }
                 
                 const eventItem = document.createElement('div');
                 eventItem.className = `event-item ${eventStatus}`;
-                // TITLE FIRST, THEN TIME
                 eventItem.innerHTML = `
                     <div class="title">${item.title}</div>
                     <div class="time">${item.displayTime}</div>
@@ -265,14 +225,17 @@ class ConferenceView {
             
             this.agendaList.appendChild(eventsContainer);
             
+            // Log how many past events were found
+            setTimeout(() => {
+                const pastEventCount = document.querySelectorAll('.past-event').length;
+                console.log(`Total past events rendered: ${pastEventCount}`);
+            }, 100);
+            
         } catch (error) {
             console.error('Error rendering agenda list:', error);
         }
     }
 
-    /**
-     * Render current event for Display 2
-     */
     renderCurrentEvent(currentEvent, status, nextEvent, timeUntilNext) {
         if (!this.isDisplay2 || !this.currentDetail) return;
 
@@ -280,7 +243,6 @@ class ConferenceView {
             this.currentDetail.innerHTML = '';
             
             if (currentEvent && status === 'active') {
-                // Show current active event
                 this.currentDetail.innerHTML = `
                     <div class="event-content">
                         <div class="current-time">${currentEvent.displayTime}</div>
@@ -289,7 +251,6 @@ class ConferenceView {
                     </div>
                 `;
             } else if (status === 'waiting') {
-                // Show waiting state with next event preview
                 let nextEventHtml = '';
                 if (nextEvent) {
                     const timeText = timeUntilNext > 0 ? 
@@ -321,7 +282,6 @@ class ConferenceView {
                     </div>
                 `;
             } else if (status === 'completed') {
-                // Show completion state
                 this.currentDetail.innerHTML = `
                     <div class="event-content">
                         <div class="no-current-event">
@@ -338,7 +298,6 @@ class ConferenceView {
                     </div>
                 `;
             } else {
-                // Fallback state
                 this.currentDetail.innerHTML = `
                     <div class="event-content">
                         <div class="no-current-event">
@@ -354,9 +313,6 @@ class ConferenceView {
         }
     }
 
-    /**
-     * Update controls for Display 1
-     */
     updateControls(currentIndex, totalEvents, isAutoMode) {
         if (!this.isDisplay1) return;
         try {
@@ -372,9 +328,6 @@ class ConferenceView {
         }
     }
 
-    /**
-     * Update clock display
-     */
     updateClock(timeString) {
         try {
             if (this.currentClock) {
@@ -385,9 +338,6 @@ class ConferenceView {
         }
     }
 
-    /**
-     * Update debug panel
-     */
     updateDebugPanel(debugInfo) {
         if (!this.isDisplay1) return;
         try {
@@ -401,27 +351,18 @@ class ConferenceView {
         }
     }
 
-    /**
-     * Hide control buttons
-     */
     hideControls() {
         if (this.controls) {
             this.controls.classList.add('hidden');
         }
     }
 
-    /**
-     * Show control buttons
-     */
     showControls() {
         if (this.controls) {
             this.controls.classList.remove('hidden');
         }
     }
 
-    /**
-     * Set event handlers
-     */
     setEventHandlers(handlers) {
         this.onPrevious = handlers.onPrevious;
         this.onNext = handlers.onNext;
@@ -435,9 +376,6 @@ class ConferenceView {
         }
     }
 
-    /**
-     * Show loading state
-     */
     showLoading() {
         try {
             if (this.isDisplay2 && this.currentDetail) {
@@ -464,9 +402,6 @@ class ConferenceView {
         }
     }
 
-    /**
-     * Show error state
-     */
     showError(errorMessage) {
         try {
             if (this.isDisplay2 && this.currentDetail) {
@@ -502,9 +437,6 @@ class ConferenceView {
         }
     }
 
-    /**
-     * Update conference day display
-     */
     updateConferenceDay(day) {
         this.setCurrentDay(day);
         const dayElement = document.querySelector('.event-day');
@@ -513,9 +445,6 @@ class ConferenceView {
         }
     }
 
-    /**
-     * Cleanup resources
-     */
     cleanup() {
         console.log('Cleaning up view resources...');
         
@@ -528,7 +457,6 @@ class ConferenceView {
     }
 }
 
-// Global functions for console access
 window.hideButtons = function() {
     if (window.conferenceApp && window.conferenceApp.view) {
         window.conferenceApp.view.hideControls();
@@ -561,4 +489,37 @@ window.testHighlight = function(index) {
 };
 
 console.log('ConferenceView loaded for Climate Symposium 2025');
-console.log('Features: Shows ALL events (past/current/future), Title first then time, Abstract animations');
+console.log('Features: Shows ALL events (past/current/future), Title first then time');
+
+// FORCE past-event class based on real time - runs every second
+setInterval(() => {
+    if (!window.conferenceApp?.model) return;
+    
+    const currentTime = window.conferenceApp.model.getCurrentRealTime();
+    const currentMinutes = parseInt(currentTime.split(':')[0]) * 60 + parseInt(currentTime.split(':')[1]);
+    
+    document.querySelectorAll('.event-item').forEach(eventItem => {
+        const timeElement = eventItem.querySelector('.time');
+        if (!timeElement) return;
+        
+        const timeText = timeElement.textContent.trim();
+        const timeMatch = timeText.match(/(\d{1,2}):(\d{2})\s*(AM|PM)?/i);
+        if (!timeMatch) return;
+        
+        let hours = parseInt(timeMatch[1]);
+        const minutes = parseInt(timeMatch[2]);
+        
+        if (timeMatch[3]) {
+            if (timeMatch[3].toUpperCase() === 'PM' && hours !== 12) hours += 12;
+            if (timeMatch[3].toUpperCase() === 'AM' && hours === 12) hours = 0;
+        }
+        
+        const eventMinutes = hours * 60 + minutes;
+        const eventEndMinutes = eventMinutes + 90; // assume 90 min duration
+        
+        if (eventEndMinutes <= currentMinutes) {
+            eventItem.classList.remove('current-active', 'future-event');
+            eventItem.classList.add('past-event');
+        }
+    });
+}, 1000);
