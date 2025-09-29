@@ -65,6 +65,19 @@ body::after {
     height: 100vh;
 }
 
+/* Brand palette (restricted) */
+:root {
+    /* Allowed: 087F8D, 20ADC1, 7ED0DC, 000000, FFFFFF */
+    --brand-blue: #087F8D;          /* deep teal */
+    --brand-indigo: #20ADC1;        /* teal */
+    --brand-purple: #7ED0DC;        /* light teal */
+    --brand-blue-bright: #20ADC1;   /* cycle variant */
+    --brand-indigo-bright: #7ED0DC; /* cycle variant */
+    --brand-purple-bright: #087F8D; /* cycle variant */
+    --brand-black: #000000;
+    --brand-white: #FFFFFF;
+}
+
 .screen-2 {
     background: transparent;
     color: white;
@@ -317,6 +330,78 @@ body::after {
     transition: transform 0.35s ease, box-shadow 0.35s ease, background-color 0.35s ease, color 0.35s ease, opacity 0.35s ease;
 }
 
+/* Animated gradient border that loops around each card (subtle) */
+/* Animated gradient stroke around the card (no overlay on center) */
+@property --angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.event-item {
+    --border-thickness: 6px;
+    --stroke-speed: 14s; /* speed of color cycling */
+    --c1: var(--brand-blue);
+    --c2: var(--brand-indigo);
+    --c3: var(--brand-purple);
+}
+
+/* Stroke on non-active cards only (white cards) */
+.event-item:not(.current-active) {
+    border: var(--border-thickness) solid transparent; /* reserve space for stroke */
+    background: #ffffff; /* white fill only */
+    position: relative;
+}
+
+.event-item:not(.current-active)::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: conic-gradient(
+        from 0deg,
+        var(--c1) 0deg,
+        var(--c2) 120deg,
+        var(--c3) 240deg,
+        var(--c1) 360deg
+    );
+    /* Mask the inner area so only a ring (stroke) remains */
+    -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    padding: var(--border-thickness);
+    pointer-events: none;
+    z-index: 0; /* keep beneath content */
+    /* Keep stroke stationary; animate only between brand gradients */
+    animation: strokePalette var(--stroke-speed) ease-in-out infinite;
+    will-change: background;
+}
+
+.event-item.current-active {
+    --border-thickness: 6px;
+    --stroke-speed: 12s; /* slightly faster for active if enabled later */
+    --c1: var(--brand-blue-bright);
+    --c2: var(--brand-indigo-bright);
+    --c3: var(--brand-purple-bright);
+}
+
+@keyframes strokePalette {
+  0% {
+    background: conic-gradient(from 0deg, var(--brand-blue) 0deg, var(--brand-indigo) 120deg, var(--brand-purple) 240deg, var(--brand-blue) 360deg);
+  }
+  50% {
+    background: conic-gradient(from 0deg, var(--brand-blue-bright) 0deg, var(--brand-indigo-bright) 120deg, var(--brand-purple-bright) 240deg, var(--brand-blue-bright) 360deg);
+  }
+  100% {
+    background: conic-gradient(from 0deg, var(--brand-blue) 0deg, var(--brand-indigo) 120deg, var(--brand-purple) 240deg, var(--brand-blue) 360deg);
+  }
+}
+
 /* CURRENT EVENT - HIGHLIGHTED IN TEAL - STRONGER SPECIFICITY */
 .event-item.current-active {
     background: #087F8D !important;
@@ -442,15 +527,6 @@ body::after {
     display: none;
     max-width: clamp(250px, 25vw, 400px);
     border: 2px solid #20ADC1;
-}
-
-.agenda-list {
-    flex: 1;
-    overflow-y: auto;
-    padding-right: clamp(8px, 1vw, 15px);
-    position: relative;
-    z-index: 2;
-    height: 100%;
 }
 
 /* =============================================================================
