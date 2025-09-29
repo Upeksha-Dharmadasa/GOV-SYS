@@ -134,6 +134,15 @@ body::after {
     display: inline-flex;
     align-items: center;
     gap: clamp(40px, 5vw, 80px);
+    /* Improve contrast + subtle brand-colored glow (approved colors only) */
+    text-shadow:
+        0 2px 6px rgba(0, 0, 0, 0.35),          /* base depth (black) */
+        0 1px 1px rgba(0, 0, 0, 0.25),          /* crisp edge (black) */
+        0 0 8px rgba(32, 173, 193, 0.55),       /* teal glow #20ADC1 */
+        0 0 14px rgba(126, 208, 220, 0.45),     /* light teal glow #7ED0DC */
+        0 0 18px rgba(8, 127, 141, 0.35);       /* deep teal glow #087F8D */
+    -webkit-text-stroke: 1px #FFFFFF;           /* thin white edge for clarity */
+    paint-order: stroke fill; /* Prefer drawing stroke first for legibility */
 }
 
 /* LOGO IN MOVING TEXT - SMALLER SIZE TO PREVENT CUTTING */
