@@ -35,13 +35,22 @@ body::after {
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 50%;
+    height: 65%;
     background: url('Background.PNG') center bottom / cover no-repeat;
-    opacity: 0.6;
+    opacity: 0.88;
     z-index: 1;
     pointer-events: none;
-    mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 50%, rgba(0,0,0,0) 100%);
-    -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 50%, rgba(0,0,0,0) 100%);
+    mask-image: linear-gradient(to top,
+        rgba(0,0,0,1) 0%,
+        rgba(0,0,0,0.95) 70%,
+        rgba(0,0,0,0.2) 92%,
+        rgba(0,0,0,0) 100%);
+    -webkit-mask-image: linear-gradient(to top,
+        rgba(0,0,0,1) 0%,
+        rgba(0,0,0,0.95) 70%,
+        rgba(0,0,0,0.2) 92%,
+        rgba(0,0,0,0) 100%);
+    filter: contrast(1.05) saturate(1.05);
 }
 
 .container {
@@ -125,7 +134,7 @@ body::after {
 
 .moving-text {
     font-family: 'Poppins', sans-serif;
-    font-size: clamp(2.5em, 4.5vw, 7em);
+    font-size: clamp(3em, 5vw, 8em);
     font-weight: 400;
     color: #000;
     white-space: nowrap;
@@ -337,6 +346,7 @@ body::after {
     min-height: clamp(100px, 10vh, 140px);
     z-index: 1;
     transition: transform 0.35s ease, box-shadow 0.35s ease, background-color 0.35s ease, color 0.35s ease, opacity 0.35s ease;
+    font-family: 'Poppins', sans-serif; /* ensure all card text uses Poppins */
 }
 
 /* Animated gradient border that loops around each card (subtle) */
@@ -423,6 +433,17 @@ body::after {
     transform: scale(1.03) !important;
     transition: all 0.4s ease !important;
     animation: popIn 350ms ease both;
+}
+
+/* White stroke around the current active card (no layout shift) */
+.event-item.current-active::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 4px solid #FFFFFF; /* approved color */
+    pointer-events: none;
+    z-index: 1; /* under text (z-index 2) and sweep */
 }
 
 .event-item.current-active .title {
