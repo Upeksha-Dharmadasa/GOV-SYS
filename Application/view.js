@@ -175,7 +175,7 @@ class ConferenceView {
             this.agendaList.appendChild(headerSection);
             
             const movingTextBanner = document.createElement('div');
-            movingTextBanner.className = 'moving-text-container';
+            movingTextBanner.className = 'moving-text-container fade-in-up';
             movingTextBanner.innerHTML = `
                 <div class="moving-text">
                     WELCOME TO SYMPOSIUM ON CLIMATE ACTIONS - 2025
@@ -218,7 +218,7 @@ class ConferenceView {
             }
             
             const eventsContainer = document.createElement('div');
-            eventsContainer.className = 'all-events';
+            eventsContainer.className = 'all-events fade-in-up';
             
             console.log(`Current time: ${currentTime} (${currentMinutes} minutes)`);
             

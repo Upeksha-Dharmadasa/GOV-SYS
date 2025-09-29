@@ -895,6 +895,22 @@ body::after {
     100% { left: 110%; opacity: 0; }
 }
 
+/* Generic fade-in-up animation for content swaps (Display 2) */
+.fade-in-up {
+    animation: fadeInUp 420ms ease both;
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 @media (max-width: 480px) {
     .event-item.past-event::after {
         font-size: clamp(0.5em, 4vw, 0.9em) !important;
