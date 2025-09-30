@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Climate Symposium 2025 - Fold 1024x448 (512x448 x2)</title>
+  <title>Climate Symposium 2025 - Fold 512x448 (256x448 x2)</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
-    /* Fixed 1024x448 canvas (two faces of 512x448). No scroll. */
-    html, body { width: 1024px; height: 448px; overflow: hidden; margin: 0; padding: 0; background: #000; }
-    .canvas { width: 1024px; height: 448px; display: flex; }
-    .screen { position: relative; width: 512px; height: 448px; overflow: hidden; }
+    /* Fixed 512x448 canvas (two faces of 256x448). No scroll. */
+    html, body { width: 512px; height: 448px; overflow: hidden; margin: 0; padding: 0; background: #000; }
+    .canvas { width: 512px; height: 448px; display: flex; }
+    .screen { position: relative; width: 256px; height: 448px; overflow: hidden; }
     .scaler { position: absolute; left: 50%; top: 0; transform-origin: top center; }
 
     /* Optional center fold guide (invisible by default) */
@@ -20,26 +20,26 @@
 
     /* Scoped styles for the right static screen */
     #screen2 .static-display { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: 24px; text-align: center; }
-    #screen2 .main-logo { max-width: 80%; height: auto; filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3)); }
-    #screen2 .main-title { font-size: 56px; font-weight: 800; color: #fff; letter-spacing: 2px; text-shadow: 3px 3px 12px rgba(0,0,0,0.4); margin: 4px 0; }
-    #screen2 .sub-title { font-size: 64px; font-weight: 900; color: #fff; text-shadow: 4px 4px 15px rgba(0,0,0,0.5); margin: 4px 0; }
-    #screen2 .year { font-size: 56px; font-weight: 800; color: #FFD700; margin: 6px 0; }
-    #screen2 .tagline { font-size: 24px; color: rgba(255,255,255,0.95); text-shadow: 2px 2px 8px rgba(0,0,0,0.3); margin-top: 10px; }
-    #screen2 .qr-container { background: #fff; padding: 12px; border-radius: 14px; box-shadow: 0 12px 40px rgba(0,0,0,0.3); display: inline-block; margin: 10px 0 6px; }
-    #screen2 .scan-text { font-size: 24px; font-weight: 700; color: #fff; letter-spacing: 2px; text-transform: uppercase; margin: 6px 0; }
-    #screen2 .website-url { font-size: 28px; font-weight: 600; color: #FFD700; font-family: 'Courier New', monospace; }
+    #screen2 .main-logo { max-width: 70%; height: auto; filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3)); }
+    #screen2 .main-title { font-size: 40px; font-weight: 800; color: #fff; letter-spacing: 1px; text-shadow: 3px 3px 12px rgba(0,0,0,0.4); margin: 2px 0; }
+    #screen2 .sub-title { font-size: 46px; font-weight: 900; color: #fff; text-shadow: 4px 4px 15px rgba(0,0,0,0.5); margin: 2px 0; }
+    #screen2 .year { font-size: 38px; font-weight: 800; color: #FFD700; margin: 4px 0; }
+    #screen2 .tagline { font-size: 18px; color: rgba(255,255,255,0.95); text-shadow: 2px 2px 8px rgba(0,0,0,0.3); margin-top: 6px; }
+    #screen2 .qr-container { background: #fff; padding: 8px; border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.3); display: inline-block; margin: 8px 0 4px; }
+    #screen2 .scan-text { font-size: 18px; font-weight: 700; color: #fff; letter-spacing: 1px; text-transform: uppercase; margin: 4px 0; }
+    #screen2 .website-url { font-size: 20px; font-weight: 600; color: #FFD700; font-family: 'Courier New', monospace; }
   </style>
 </head>
 <body>
   <div class="canvas">
-    <!-- Left face: Agenda (512x448) -->
+    <!-- Left face: Agenda (256x448) -->
     <div id="screen1" class="screen">
       <div class="scaler" id="scaler1">
         <div id="agendaList" class="agenda-list"></div>
       </div>
     </div>
 
-    <!-- Right face: Static banner + QR (512x448) -->
+    <!-- Right face: Static banner + QR (256x448) -->
     <div id="screen2" class="screen">
       <div class="scaler" id="scaler2">
         <div class="static-display">
@@ -89,14 +89,14 @@
         });
       }
 
-      // Auto-fit both faces to 512x448 without scroll
+      // Auto-fit both faces to 256x448 and 256x448 without scroll
       function fitFace(screenEl, scalerEl) {
         if (!screenEl || !scalerEl) return;
         // Reset transform and center horizontally
         scalerEl.style.transform = 'none';
         scalerEl.style.left = '50%';
         // Measure content
-        var maxW = 512, maxH = 448;
+        var maxW = 256, maxH = 448;
         var contentW = scalerEl.scrollWidth;
         var contentH = scalerEl.scrollHeight;
         if (!contentW || !contentH) return;
