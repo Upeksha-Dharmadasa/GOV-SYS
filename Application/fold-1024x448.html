@@ -51,7 +51,7 @@
     #screen1 .event-item { padding: 14px 16px !important; margin-bottom: 10px !important; border-radius: 12px !important; box-shadow: none !important; min-height: 90px !important; word-break: break-word; background: transparent !important; border: none !important; }
     #screen1 .event-item .title { font-size: 32px !important; font-weight: 900 !important; line-height: 1.12 !important; margin-bottom: 6px !important; color: #FFFFFF !important; }
     #screen1 .event-item .time { font-size: 24px !important; font-weight: 800 !important; opacity: 1 !important; color: #FFFFFF !important; }
-    #screen1 .event-item.current-active { transform: none !important; box-shadow: none !important; margin: 10px 0 !important; min-height: 110px !important; background: rgba(255,255,255,0.15) !important; border-radius: 12px !important; }
+    #screen1 .event-item.current-active { transform: none !important; box-shadow: none !important; margin: 10px 0 !important; min-height: 90px !important; background: rgba(255,255,255,0.15) !important; border-radius: 12px !important; }
     #screen1 .event-item.past-event::after { display: none !important; }
 
     /* Auto-highlight style (mirrors current-active look) */
@@ -169,9 +169,9 @@
         if (label && day) label.textContent = day;
       } catch(e) {}
 
-      // Paginate agenda to show 5 cards and auto-rotate (without moving DOM)
-      var PAGE_SIZE = 5; // show 5 big cards per page
-      var PAGE_INTERVAL_MS = 6000; // change every 6 seconds
+      // Paginate agenda to show 3 cards and auto-rotate/highlight (without moving DOM)
+      var PAGE_SIZE = 3; // show 3 big cards per page
+      var PAGE_INTERVAL_MS = 12000; // change highlight every 12 seconds
       var currentPage = 0;
       var totalPages = 1;
       var lastActiveIndex = -1;
@@ -202,8 +202,6 @@
         fitAll();
       }
 
-      setInterval(nextPage, PAGE_INTERVAL_MS);
-
       // Keep the active event visible: jump to the page containing it when it changes
       function syncToActive() {
         var container = document.getElementById('agendaList');
@@ -226,8 +224,8 @@
       }
       setInterval(syncToActive, 1000);
 
-      // Auto-highlight each event for 10 seconds when no real active event
-      var HIGHLIGHT_INTERVAL_MS = 10000; // 10s per item
+      // Auto-highlight each event for 12 seconds in a loop (independent of real active)
+      var HIGHLIGHT_INTERVAL_MS = 12000; // 12s per item
       var highlightIndex = -1;
       function cycleHighlight() {
         var container = document.getElementById('agendaList');
@@ -236,13 +234,6 @@
         if (!eventsContainer) return;
         var items = Array.from(eventsContainer.querySelectorAll('.event-item'));
         if (items.length === 0) return;
-        // If a real active exists, clear auto-highlight and keep it visible
-        var activeEl = eventsContainer.querySelector('.event-item.current-active');
-        if (activeEl) {
-          items.forEach(function(el){ el.classList.remove('auto-highlight'); });
-          syncToActive();
-          return; // pause auto cycle while active event is present
-        }
         // Advance highlight index
         highlightIndex = (highlightIndex + 1) % items.length;
         // Compute target page for this index
