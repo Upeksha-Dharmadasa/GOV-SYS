@@ -367,38 +367,14 @@ body::after {
 
 /* Stroke on non-active cards only (white cards) */
 .event-item:not(.current-active) {
-    border: var(--border-thickness) solid transparent; /* reserve space for stroke */
+    border: none; /* stroke removed */
     background: #ffffff; /* white fill only */
     position: relative;
 }
 
 .event-item:not(.current-active)::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: conic-gradient(
-        from 0deg,
-        var(--c1) 0deg,
-        var(--c2) 120deg,
-        var(--c3) 240deg,
-        var(--c1) 360deg
-    );
-    /* Mask the inner area so only a ring (stroke) remains */
-    -webkit-mask:
-        linear-gradient(#000 0 0) content-box,
-        linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-    mask:
-        linear-gradient(#000 0 0) content-box,
-        linear-gradient(#000 0 0);
-    mask-composite: exclude;
-    padding: var(--border-thickness);
-    pointer-events: none;
-    z-index: 0; /* keep beneath content */
-    /* Keep stroke stationary; animate only between brand gradients */
-    animation: strokePalette var(--stroke-speed) ease-in-out infinite;
-    will-change: background;
+    /* Stroke removed for non-active cards */
+    content: none;
 }
 
 .event-item.current-active {
@@ -437,13 +413,8 @@ body::after {
 
 /* White stroke around the current active card (no layout shift) */
 .event-item.current-active::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    border: 4px solid #FFFFFF; /* approved color */
-    pointer-events: none;
-    z-index: 1; /* under text (z-index 2) and sweep */
+    /* Remove white border on highlighted card */
+    content: none;
 }
 
 .event-item.current-active .title {
