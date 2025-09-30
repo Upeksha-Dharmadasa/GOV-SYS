@@ -9,7 +9,20 @@
     /* Fixed 512x863 canvas (two faces of 256x863). No scroll. */
     /* Do not override background so styles.css gradient + image apply */
     html, body { width: 512px; height: 863px; overflow: hidden; margin: 0; padding: 0; background: transparent; }
-    .canvas { width: 512px; height: 863px; display: flex; }
+    .canvas { position: relative; width: 512px; height: 863px; display: flex; background: linear-gradient(180deg, #087F8D 0%, #20ADC1 50%, #7ED0DC 100%); }
+    .canvas::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      width: 100%; height: 65%;
+      background: url('Background.PNG') center bottom / cover no-repeat;
+      opacity: 0.88;
+      z-index: 0;
+      pointer-events: none;
+      mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.95) 70%, rgba(0,0,0,0.2) 92%, rgba(0,0,0,0) 100%);
+      -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.95) 70%, rgba(0,0,0,0.2) 92%, rgba(0,0,0,0) 100%);
+      filter: contrast(1.05) saturate(1.05);
+    }
     .screen { position: relative; width: 256px; height: 863px; overflow: hidden; }
     .scaler { position: absolute; left: 50%; top: 0; transform-origin: top center; }
 
@@ -26,47 +39,26 @@
 
     /* Hide default header completely */
     #screen1 .agenda-header { display: none !important; }
+    /* Ensure any logo blocks on Screen 1 are hidden */
+    #screen1 .conference-logo { display: none !important; }
 
     /* Custom compact banner: Day only */
-    #screen1 .day-banner { display: flex; align-items: center; justify-content: center; height: 80px; margin: 6px 0 8px; }
-    #screen1 .day-banner .day-label { color: #FFFFFF; font-weight: 900; font-size: 28px; letter-spacing: 0.8px; text-transform: uppercase; }
+    #screen1 .day-banner { display: flex !important; align-items: center; justify-content: center; height: 96px; margin: 6px 0 8px; position: relative; z-index: 1; }
+    #screen1 .day-banner .day-label { color: #FFFFFF; font-weight: 900; font-size: 44px; letter-spacing: 1.2px; text-transform: uppercase; text-shadow: 0 2px 6px rgba(0,0,0,0.35); }
 
     #screen1 .agenda-list { min-height: 863px !important; width: 256px !important; max-width: 256px !important; }
     #screen1 .all-events { padding: 8px !important; width: 256px !important; max-width: 256px !important; }
-    #screen1 .event-item { padding: 14px 16px !important; margin-bottom: 10px !important; border-radius: 12px !important; box-shadow: none !important; min-height: 90px !important; word-break: break-word; }
-    #screen1 .event-item .title { font-size: 32px !important; font-weight: 900 !important; line-height: 1.12 !important; margin-bottom: 6px !important; }
-    #screen1 .event-item .time { font-size: 24px !important; font-weight: 800 !important; opacity: 1 !important; }
-    #screen1 .event-item.current-active { transform: none !important; box-shadow: none !important; margin: 10px 0 !important; min-height: 110px !important; }
+    #screen1 .event-item { padding: 14px 16px !important; margin-bottom: 10px !important; border-radius: 12px !important; box-shadow: none !important; min-height: 90px !important; word-break: break-word; background: transparent !important; border: none !important; }
+    #screen1 .event-item .title { font-size: 32px !important; font-weight: 900 !important; line-height: 1.12 !important; margin-bottom: 6px !important; color: #FFFFFF !important; }
+    #screen1 .event-item .time { font-size: 24px !important; font-weight: 800 !important; opacity: 1 !important; color: #FFFFFF !important; }
+    #screen1 .event-item.current-active { transform: none !important; box-shadow: none !important; margin: 10px 0 !important; min-height: 110px !important; background: rgba(255,255,255,0.15) !important; border-radius: 12px !important; }
     #screen1 .event-item.past-event::after { display: none !important; }
 
-    /* Compact header: centered logo + day only */
-    #screen1 .agenda-header { 
-      display: flex !important; 
-      flex-direction: column; 
-      align-items: center; 
-      justify-content: center; 
-      gap: 6px; 
-      padding: 6px 0 !important; 
-      margin: 2px 0 6px !important; 
-      background: transparent !important; 
-      box-shadow: none !important; 
-      border-radius: 0 !important; 
-      min-height: 72px !important; 
-    }
-    #screen1 .agenda-header .event-title { display: none !important; }
-    #screen1 .agenda-header .conference-logo { margin: 0 !important; }
-    #screen1 .agenda-header .conference-logo img { max-width: 80px !important; height: auto !important; }
-    #screen1 .agenda-header .event-title-section { text-align: center !important; }
-    #screen1 .agenda-header .event-day { 
-      position: static !important; 
-      background: transparent !important; 
-      color: #FFFFFF !important; 
-      font-size: 20px !important; 
-      font-weight: 800 !important; 
-      letter-spacing: 0.5px !important; 
-      padding: 0 !important; 
-      margin: 0 !important; 
-    }
+    /* Auto-highlight style (mirrors current-active look) */
+    #screen1 .event-item.auto-highlight { background: rgba(255,255,255,0.18) !important; color: #FFFFFF !important; }
+
+    /* Ensure default header remains hidden to avoid duplicate day text */
+    #screen1 .agenda-header { display: none !important; }
 
     /* Scoped styles for the right static screen */
     #screen2 .static-display { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: 24px; text-align: center; }
@@ -177,39 +169,31 @@
         if (label && day) label.textContent = day;
       } catch(e) {}
 
-      // Paginate agenda to show fewer larger cards and auto-rotate
-      var PAGE_SIZE = 3; // show 3 big cards per page
-      var PAGE_INTERVAL_MS = 8000; // change every 8 seconds
+      // Paginate agenda to show 5 cards and auto-rotate (without moving DOM)
+      var PAGE_SIZE = 5; // show 5 big cards per page
+      var PAGE_INTERVAL_MS = 6000; // change every 6 seconds
       var currentPage = 0;
       var totalPages = 1;
+      var lastActiveIndex = -1;
 
       function paginateAgenda() {
         var container = document.getElementById('agendaList');
         if (!container) return;
         var eventsContainer = container.querySelector('.all-events');
         if (!eventsContainer) return;
+        // Keep full DOM intact; just show/hide per page
+        eventsContainer.style.display = 'flex';
+        eventsContainer.style.flexDirection = 'column';
+        eventsContainer.style.gap = '10px';
         var items = Array.from(eventsContainer.querySelectorAll('.event-item'));
         if (items.length === 0) return;
-
-        // Create wrapper once
-        var pageWrap = eventsContainer.querySelector('.page-wrap');
-        if (!pageWrap) {
-          pageWrap = document.createElement('div');
-          pageWrap.className = 'page-wrap';
-          pageWrap.style.display = 'flex';
-          pageWrap.style.flexDirection = 'column';
-          pageWrap.style.gap = '10px';
-          eventsContainer.innerHTML = '';
-          eventsContainer.appendChild(pageWrap);
-        } else {
-          pageWrap.innerHTML = '';
-        }
-
         totalPages = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
         currentPage = Math.min(currentPage, totalPages - 1);
         var start = currentPage * PAGE_SIZE;
         var end = Math.min(start + PAGE_SIZE, items.length);
-        for (var i = start; i < end; i++) pageWrap.appendChild(items[i]);
+        items.forEach(function(el, idx){
+          el.style.display = (idx >= start && idx < end) ? 'block' : 'none';
+        });
       }
 
       function nextPage() {
@@ -219,6 +203,62 @@
       }
 
       setInterval(nextPage, PAGE_INTERVAL_MS);
+
+      // Keep the active event visible: jump to the page containing it when it changes
+      function syncToActive() {
+        var container = document.getElementById('agendaList');
+        if (!container) return;
+        var eventsContainer = container.querySelector('.all-events');
+        if (!eventsContainer) return;
+        var items = Array.from(eventsContainer.querySelectorAll('.event-item'));
+        if (items.length === 0) return;
+        var activeEl = eventsContainer.querySelector('.event-item.current-active');
+        var idx = activeEl ? items.indexOf(activeEl) : -1;
+        if (idx >= 0 && idx !== lastActiveIndex) {
+          lastActiveIndex = idx;
+          var targetPage = Math.floor(idx / PAGE_SIZE);
+          if (targetPage !== currentPage) {
+            currentPage = targetPage;
+            paginateAgenda();
+            fitAll();
+          }
+        }
+      }
+      setInterval(syncToActive, 1000);
+
+      // Auto-highlight each event for 10 seconds when no real active event
+      var HIGHLIGHT_INTERVAL_MS = 10000; // 10s per item
+      var highlightIndex = -1;
+      function cycleHighlight() {
+        var container = document.getElementById('agendaList');
+        if (!container) return;
+        var eventsContainer = container.querySelector('.all-events');
+        if (!eventsContainer) return;
+        var items = Array.from(eventsContainer.querySelectorAll('.event-item'));
+        if (items.length === 0) return;
+        // If a real active exists, clear auto-highlight and keep it visible
+        var activeEl = eventsContainer.querySelector('.event-item.current-active');
+        if (activeEl) {
+          items.forEach(function(el){ el.classList.remove('auto-highlight'); });
+          syncToActive();
+          return; // pause auto cycle while active event is present
+        }
+        // Advance highlight index
+        highlightIndex = (highlightIndex + 1) % items.length;
+        // Compute target page for this index
+        var targetPage = Math.floor(highlightIndex / PAGE_SIZE);
+        if (targetPage !== currentPage) {
+          currentPage = targetPage;
+          paginateAgenda();
+          fitAll();
+        }
+        // Apply highlight
+        items.forEach(function(el, idx){
+          if (idx === highlightIndex) el.classList.add('auto-highlight');
+          else el.classList.remove('auto-highlight');
+        });
+      }
+      setInterval(cycleHighlight, HIGHLIGHT_INTERVAL_MS);
     });
   </script>
 </body>
