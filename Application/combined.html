@@ -6,11 +6,13 @@
   <title>Climate Symposium 2025 - Combined Display</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
-    /* Combined page layout overrides: stack screens vertically */
-    body.combined { overflow: auto; height: auto; min-height: 100vh; }
-    body.combined .container { display: block; height: auto; }
-    body.combined .screen { height: auto; }
-    body.combined .screen-1, body.combined .screen-2 { height: auto; }
+    /* Fixed 512x448 viewport, no scroll */
+    html, body { width: 512px; height: 448px; overflow: hidden; margin: 0; padding: 0; }
+    body.combined .container { display: block; width: 512px; height: 448px; }
+    body.combined .screen { position: relative; width: 100%; overflow: hidden; }
+    body.combined .screen-1, body.combined .screen-2 { height: 224px; }
+    /* Scale content from 2048x896 to 512x224 */
+    .screen .scaler { position: absolute; top: 0; left: 0; width: 2048px; height: 896px; transform-origin: top left; transform: scale(0.25); }
 
     /* Scoped styles for Display 2 elements inside .screen-2 */
     .screen-2 .static-display {
@@ -75,27 +77,31 @@
   <div class="container">
     <!-- Screen 1: Agenda List -->
     <div id="screen1" class="screen screen-1">
-      <div id="agendaList" class="agenda-list"></div>
+      <div class="scaler">
+        <div id="agendaList" class="agenda-list"></div>
+      </div>
     </div>
 
     <!-- Screen 2: Static Display with QR -->
     <div id="screen2" class="screen screen-2">
-      <div class="static-display">
-        <div class="logo-section">
-          <img src="LOGO.png" alt="Climate Symposium 2025" class="main-logo" />
-        </div>
-        <div class="title-section">
-          <h1 class="main-title">SYMPOSIUM ON</h1>
-          <h2 class="sub-title">CLIMATE ACTIONS</h2>
-          <h3 class="year">2025</h3>
-          <p class="tagline">Building a Sustainable Future Together</p>
-        </div>
-        <div class="qr-section">
-          <div class="qr-container">
-            <div class="qr-code" id="qrcode"></div>
+      <div class="scaler">
+        <div class="static-display">
+          <div class="logo-section">
+            <img src="LOGO.png" alt="Climate Symposium 2025" class="main-logo" />
           </div>
-          <p class="scan-text">SCAN TO VISIT</p>
-          <p class="website-url">climateaction.gov.lk</p>
+          <div class="title-section">
+            <h1 class="main-title">SYMPOSIUM ON</h1>
+            <h2 class="sub-title">CLIMATE ACTIONS</h2>
+            <h3 class="year">2025</h3>
+            <p class="tagline">Building a Sustainable Future Together</p>
+          </div>
+          <div class="qr-section">
+            <div class="qr-container">
+              <div class="qr-code" id="qrcode"></div>
+            </div>
+            <p class="scan-text">SCAN TO VISIT</p>
+            <p class="website-url">climateaction.gov.lk</p>
+          </div>
         </div>
       </div>
     </div>
