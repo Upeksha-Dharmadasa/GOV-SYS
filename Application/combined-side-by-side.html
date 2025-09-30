@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Climate Symposium 2025 - Combined Side-by-Side</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Scoped styles for Display 2 elements inside .screen-2 */
+    .screen-2 .static-display {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: clamp(30px, 5vw, 80px);
+      text-align: center;
+    }
+
+    .screen-2 .logo-section { margin-bottom: clamp(40px, 5vh, 80px); animation: gentleFloat 6s ease-in-out infinite; }
+    .screen-2 .main-logo { max-width: clamp(250px, 35vw, 600px); height: auto; filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3)); }
+
+    .screen-2 .title-section { margin-bottom: clamp(50px, 6vh, 100px); animation: fadeInUp 1.5s ease-out; }
+    .screen-2 .main-title { font-size: clamp(3em, 7vw, 10em); font-weight: 800; color: #fff; letter-spacing: clamp(2px, 0.3vw, 10px); text-shadow: 3px 3px 12px rgba(0,0,0,0.4); margin-bottom: clamp(10px, 1vh, 20px); line-height: 1.1; animation: textGlow 4s ease-in-out infinite; }
+    .screen-2 .sub-title { font-size: clamp(4em, 9vw, 14em); font-weight: 900; color: #fff; letter-spacing: clamp(3px, 0.4vw, 12px); text-shadow: 4px 4px 15px rgba(0,0,0,0.5); margin-bottom: clamp(15px, 2vh, 30px); line-height: 1; animation: shimmer 3s ease-in-out infinite; }
+    .screen-2 .year { font-size: clamp(3em, 7vw, 10em); font-weight: 800; color: #FFD700; letter-spacing: clamp(4px, 0.5vw, 15px); text-shadow: 3px 3px 10px rgba(0,0,0,0.4); margin-bottom: clamp(20px, 2vh, 40px); animation: pulse 2s ease-in-out infinite; }
+    .screen-2 .tagline { font-size: clamp(1.5em, 3vw, 5em); font-weight: 400; color: rgba(255,255,255,0.95); letter-spacing: clamp(1px, 0.2vw, 4px); text-shadow: 2px 2px 8px rgba(0,0,0,0.3); font-style: italic; margin-top: clamp(15px, 2vh, 30px); }
+
+    .screen-2 .qr-section { margin-top: clamp(20px, 3vh, 40px); animation: fadeIn 2s ease-out; }
+    .screen-2 .qr-container { background: #fff; padding: clamp(20px, 3vw, 40px); border-radius: clamp(20px, 3vw, 40px); box-shadow: 0 15px 50px rgba(0,0,0,0.3); display: inline-block; margin-bottom: clamp(20px, 2vh, 35px); animation: qrPulse 3s ease-in-out infinite; }
+    .screen-2 .qr-code img { display: block; width: clamp(180px, 25vw, 300px) !important; height: clamp(180px, 25vw, 300px) !important; border-radius: clamp(8px, 1vw, 15px); }
+    .screen-2 .scan-text { font-size: clamp(1.8em, 3.5vw, 5em); font-weight: 700; color: #fff; letter-spacing: clamp(2px, 0.3vw, 6px); text-shadow: 2px 2px 8px rgba(0,0,0,0.4); margin-bottom: clamp(8px, 1vh, 15px); text-transform: uppercase; animation: bounce 2s ease-in-out infinite; }
+    .screen-2 .website-url { font-size: clamp(2em, 4vw, 6em); font-weight: 600; color: #FFD700; letter-spacing: clamp(1px, 0.2vw, 4px); text-shadow: 2px 2px 8px rgba(0,0,0,0.4); font-family: 'Courier New', monospace; }
+
+    @keyframes gentleFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-15px)} }
+    @keyframes fadeInUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+    @keyframes textGlow { 0%,100%{text-shadow:3px 3px 12px rgba(0,0,0,0.4)} 50%{text-shadow:3px 3px 20px rgba(126,208,220,0.6),0 0 30px rgba(255,255,255,0.3)} }
+    @keyframes shimmer { 0%,100%{opacity:1} 50%{opacity:0.9} }
+    @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
+    @keyframes qrPulse { 0%,100%{transform:scale(1); box-shadow:0 15px 50px rgba(0,0,0,0.3)} 50%{transform:scale(1.02); box-shadow:0 20px 60px rgba(32,173,193,0.4)} }
+    @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+
+    /* Responsive tweaks retained from Display 2 */
+    @media (min-width: 2560px) {
+      .screen-2 .main-logo { max-width: clamp(500px, 40vw, 800px); }
+      .screen-2 .main-title { font-size: clamp(6em, 8vw, 14em); }
+      .screen-2 .sub-title { font-size: clamp(8em, 10vw, 18em); }
+      .screen-2 .year { font-size: clamp(6em, 8vw, 14em); }
+      .screen-2 .tagline { font-size: clamp(3em, 4vw, 7em); }
+      .screen-2 .qr-code img { width: clamp(300px, 30vw, 400px) !important; height: clamp(300px, 30vw, 400px) !important; }
+      .screen-2 .scan-text { font-size: clamp(3em, 4vw, 7em); }
+      .screen-2 .website-url { font-size: clamp(3.5em, 5vw, 8em); }
+    }
+    @media (min-width: 1920px) and (max-width: 2559px) { .screen-2 .main-logo { max-width: clamp(400px, 35vw, 650px); } }
+    @media (max-width: 768px) {
+      .screen-2 .main-logo { max-width: clamp(150px, 40vw, 300px); }
+      .screen-2 .main-title { font-size: clamp(2em, 8vw, 4em); }
+      .screen-2 .sub-title { font-size: clamp(2.5em, 10vw, 5em); }
+      .screen-2 .year { font-size: clamp(1.8em, 7vw, 3.5em); }
+      .screen-2 .qr-code img { width: clamp(120px, 30vw, 180px) !important; height: clamp(120px, 30vw, 180px) !important; }
+    }
+    @media (min-height: 2000px) { .screen-2 .logo-section { margin-bottom: clamp(60px, 7vh, 120px); } .screen-2 .title-section { margin-bottom: clamp(80px, 8vh, 150px); } .screen-2 .static-display { padding: clamp(50px, 6vw, 120px); } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Screen 1: Agenda List (left) -->
+    <div id="screen1" class="screen screen-1">
+      <div id="agendaList" class="agenda-list"></div>
+    </div>
+
+    <!-- Screen 2: Static Display with QR (right) -->
+    <div id="screen2" class="screen screen-2">
+      <div class="static-display">
+        <div class="logo-section">
+          <img src="LOGO.png" alt="Climate Symposium 2025" class="main-logo" />
+        </div>
+        <div class="title-section">
+          <h1 class="main-title">SYMPOSIUM ON</h1>
+          <h2 class="sub-title">CLIMATE ACTIONS</h2>
+          <h3 class="year">2025</h3>
+          <p class="tagline">Building a Sustainable Future Together</p>
+        </div>
+        <div class="qr-section">
+          <div class="qr-container">
+            <div class="qr-code" id="qrcode"></div>
+          </div>
+          <p class="scan-text">SCAN TO VISIT</p>
+          <p class="website-url">climateaction.gov.lk</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Debug panel (hidden by default) -->
+  <div id="debugPanel" class="debug-panel" style="display: none;">
+    <div><strong>Climate Symposium 2025 - Debug Panel</strong></div>
+    <div>System Time: <span id="debugSystemTime"></span></div>
+    <div>Display Time: <span id="debugDisplayTime"></span></div>
+    <div>Current Event: <span id="debugCurrentEvent"></span></div>
+    <div>Mode: <span id="debugMode">Real-Time</span></div>
+    <div>Status: <span id="debugStatus">Waiting</span></div>
+    <div>Day: <span id="debugDay">Day 1</span></div>
+    <div>Pre-Event Mode: <span id="debugPreEvent">Inactive</span></div>
+    <div style="margin-top: 10px; font-size: 0.8em; color: #95a5a6;">
+      <strong>Controls:</strong><br/>
+      D - Toggle Debug Panel<br/>
+      P - Toggle Preview Mode
+    </div>
+  </div>
+
+  <!-- System Scripts for Agenda (Display 1) -->
+  <script src="model.js"></script>
+  <script src="view.js"></script>
+  <script src="controller.js"></script>
+  <script src="app-display1.js"></script>
+
+  <!-- QR Code Generator for Display 2 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var el = document.getElementById('qrcode');
+      if (el && window.QRCode) {
+        new QRCode(el, {
+          text: 'https://climateaction.gov.lk',
+          width: 250,
+          height: 250,
+          colorDark: '#000000',
+          colorLight: '#ffffff',
+          correctLevel: QRCode.CorrectLevel.H,
+        });
+      }
+    });
+  </script>
+</body>
+</html>
