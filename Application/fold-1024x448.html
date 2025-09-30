@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Climate Symposium 2025 - Fold 1024x448 (512x448 x2)</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Fixed 1024x448 canvas (two faces of 512x448). No scroll. */
+    html, body { width: 1024px; height: 448px; overflow: hidden; margin: 0; padding: 0; background: #000; }
+    .canvas { width: 1024px; height: 448px; display: flex; }
+    .screen { position: relative; width: 512px; height: 448px; overflow: hidden; }
+    .scaler { position: absolute; left: 50%; top: 0; transform-origin: top center; }
+
+    /* Optional center fold guide (invisible by default) */
+    .fold-guide { position: absolute; left: 50%; top: 0; width: 2px; height: 100%; background: rgba(255,255,255,0.08); pointer-events: none; }
+
+    /* Ensure agenda containers don't clip; we'll scale down to fit */
+    #screen1 .agenda-list, #screen1 .all-events { overflow: visible !important; max-height: none !important; padding: 0 !important; margin: 0 !important; }
+
+    /* Scoped styles for the right static screen */
+    #screen2 .static-display { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: 24px; text-align: center; }
+    #screen2 .main-logo { max-width: 80%; height: auto; filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3)); }
+    #screen2 .main-title { font-size: 56px; font-weight: 800; color: #fff; letter-spacing: 2px; text-shadow: 3px 3px 12px rgba(0,0,0,0.4); margin: 4px 0; }
+    #screen2 .sub-title { font-size: 64px; font-weight: 900; color: #fff; text-shadow: 4px 4px 15px rgba(0,0,0,0.5); margin: 4px 0; }
+    #screen2 .year { font-size: 56px; font-weight: 800; color: #FFD700; margin: 6px 0; }
+    #screen2 .tagline { font-size: 24px; color: rgba(255,255,255,0.95); text-shadow: 2px 2px 8px rgba(0,0,0,0.3); margin-top: 10px; }
+    #screen2 .qr-container { background: #fff; padding: 12px; border-radius: 14px; box-shadow: 0 12px 40px rgba(0,0,0,0.3); display: inline-block; margin: 10px 0 6px; }
+    #screen2 .scan-text { font-size: 24px; font-weight: 700; color: #fff; letter-spacing: 2px; text-transform: uppercase; margin: 6px 0; }
+    #screen2 .website-url { font-size: 28px; font-weight: 600; color: #FFD700; font-family: 'Courier New', monospace; }
+  </style>
+</head>
+<body>
+  <div class="canvas">
+    <!-- Left face: Agenda (512x448) -->
+    <div id="screen1" class="screen">
+      <div class="scaler" id="scaler1">
+        <div id="agendaList" class="agenda-list"></div>
+      </div>
+    </div>
+
+    <!-- Right face: Static banner + QR (512x448) -->
+    <div id="screen2" class="screen">
+      <div class="scaler" id="scaler2">
+        <div class="static-display">
+          <div class="logo-section">
+            <img src="LOGO.png" alt="Climate Symposium 2025" class="main-logo" />
+          </div>
+          <div class="title-section">
+            <h1 class="main-title">SYMPOSIUM ON</h1>
+            <h2 class="sub-title">CLIMATE ACTIONS</h2>
+            <h3 class="year">2025</h3>
+            <p class="tagline">Building a Sustainable Future Together</p>
+          </div>
+          <div class="qr-section">
+            <div class="qr-container">
+              <div class="qr-code" id="qrcode"></div>
+            </div>
+            <p class="scan-text">SCAN TO VISIT</p>
+            <p class="website-url">climateaction.gov.lk</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fold-guide" aria-hidden="true"></div>
+  </div>
+
+  <!-- System Scripts for Agenda (Display 1) -->
+  <script src="model.js"></script>
+  <script src="view.js"></script>
+  <script src="controller.js"></script>
+  <script src="app-display1.js"></script>
+
+  <!-- QR Code Generator for right face -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Build QR
+      var el = document.getElementById('qrcode');
+      if (el && window.QRCode) {
+        new QRCode(el, {
+          text: 'https://climateaction.gov.lk',
+          width: 180,
+          height: 180,
+          colorDark: '#000000',
+          colorLight: '#ffffff',
+          correctLevel: QRCode.CorrectLevel.H,
+        });
+      }
+
+      // Auto-fit both faces to 512x448 without scroll
+      function fitFace(screenEl, scalerEl) {
+        if (!screenEl || !scalerEl) return;
+        // Reset transform and center horizontally
+        scalerEl.style.transform = 'none';
+        scalerEl.style.left = '50%';
+        // Measure content
+        var maxW = 512, maxH = 448;
+        var contentW = scalerEl.scrollWidth;
+        var contentH = scalerEl.scrollHeight;
+        if (!contentW || !contentH) return;
+        var factor = Math.min(maxW / contentW, maxH / contentH, 1);
+        scalerEl.style.transform = 'translateX(-50%) scale(' + factor + ')';
+      }
+
+      function fitAll() {
+        fitFace(document.getElementById('screen1'), document.getElementById('scaler1'));
+        fitFace(document.getElementById('screen2'), document.getElementById('scaler2'));
+      }
+
+      setTimeout(fitAll, 300);
+      window.addEventListener('resize', fitAll);
+      var agendaList = document.getElementById('agendaList');
+      if (agendaList) {
+        var mo = new MutationObserver(function(){ setTimeout(fitAll, 50); });
+        mo.observe(agendaList, { childList: true, subtree: true });
+      }
+    });
+  </script>
+</body>
+</html>

@@ -6,13 +6,26 @@
   <title>Climate Symposium 2025 - Combined Side-by-Side</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
-    /* Fixed 512x448 viewport, no scroll */
-    html, body { width: 512px; height: 448px; overflow: hidden; margin: 0; padding: 0; }
-    .container { display: flex; width: 512px; height: 448px; }
-    .screen { position: relative; overflow: hidden; height: 100%; }
+    /* Responsive viewport: fill screen, prevent scroll */
+    html, body { width: 100vw; height: 100vh; overflow: hidden; margin: 0; padding: 0; background: transparent; }
+
+    /* Fit-Width canvas: fill width, flex height, no root scaling */
+    .fit-root { position: relative; width: 100vw; min-height: 100vh; }
+
+    .container { display: flex; width: 100%; min-height: 100vh; }
+    .screen { position: relative; overflow: hidden; height: auto; }
     .screen-1, .screen-2 { width: 50%; }
-    /* Scale content to fill each 256x448 half without distortion */
-    .screen .scaler { position: absolute; top: 0; left: 0; width: 512px; height: 896px; transform-origin: top left; transform: scale(0.5); }
+    /* On tall/narrow screens, stack vertically (agenda first) */
+    @media (max-aspect-ratio: 1/1) {
+      .container { flex-direction: column; }
+      .screen-1, .screen-2 { width: 100%; }
+    }
+    /* Scaler now defaults to 1:1; JS may scale down only if needed */
+    .screen .scaler { position: relative; transform-origin: top center; }
+
+    /* Agenda overrides: allow full content height before scaling */
+    #screen1 .agenda-list { overflow: visible !important; height: auto !important; max-height: none !important; padding: 0 !important; margin: 0 !important; }
+    #screen1 .all-events { overflow: visible !important; max-height: none !important; padding: 0 !important; margin: 0 !important; }
     /* Scoped styles for Display 2 elements inside .screen-2 */
     .screen-2 .static-display {
       position: relative;
@@ -73,12 +86,14 @@
   </style>
 </head>
 <body>
+  <div id="fitRoot" class="fit-root">
   <div class="container">
     <!-- Screen 1: Agenda List (left) -->
     <div id="screen1" class="screen screen-1">
       <div class="scaler">
         <div id="agendaList" class="agenda-list"></div>
       </div>
+  </div>
     </div>
 
     <!-- Screen 2: Static Display with QR (right) -->
@@ -133,6 +148,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
+      // No root scaling: fit width. Stack on tall/narrow via CSS.
       var el = document.getElementById('qrcode');
       if (el && window.QRCode) {
         new QRCode(el, {
@@ -143,6 +159,31 @@
           colorLight: '#ffffff',
           correctLevel: QRCode.CorrectLevel.H,
         });
+      }
+      // Auto-fit agenda to show all items without scrolling in the left screen
+      function fitAgenda() {
+        var screen = document.getElementById('screen1');
+        var scaler = screen && screen.querySelector('.scaler');
+        if (!screen || !scaler) return;
+        // Available area is the screen height; if stacked, it's viewport height; if side-by-side, also 100vh
+        var rect = screen.getBoundingClientRect();
+        var availH = rect.height || window.innerHeight;
+        // Reset any previous transform to measure natural height at current width
+        scaler.style.transform = 'none';
+        var contentH = scaler.scrollHeight;
+        if (!contentH) return;
+        // Only scale down if content taller than available area
+        var factor = Math.min(availH / contentH, 1);
+        scaler.style.transformOrigin = 'top center';
+        scaler.style.transform = 'scale(' + factor + ')';
+      }
+      // Fit after initial render and upon DOM changes
+      setTimeout(fitAgenda, 300);
+      window.addEventListener('resize', fitAgenda);
+      var agendaList = document.getElementById('agendaList');
+      if (agendaList) {
+        var mo = new MutationObserver(function(){ setTimeout(fitAgenda, 50); });
+        mo.observe(agendaList, { childList: true, subtree: true });
       }
     });
   </script>
