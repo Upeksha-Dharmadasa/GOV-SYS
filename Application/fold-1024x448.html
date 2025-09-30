@@ -24,7 +24,16 @@
       filter: contrast(1.05) saturate(1.05);
     }
     .screen { position: relative; width: 256px; height: 863px; overflow: hidden; }
-    .scaler { position: absolute; left: 50%; top: 0; transform-origin: top center; }
+    /* Darken lower part for readability (both screens) */
+    .screen::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(0,0,0,0) 40%, rgba(0,0,0,0.45) 78%, rgba(0,0,0,0.6) 100%);
+      z-index: 0;
+      pointer-events: none;
+    }
+    .scaler { position: absolute; left: 50%; top: 0; transform-origin: top center; z-index: 1; }
 
     /* Optional center fold guide (invisible by default) */
     .fold-guide { position: absolute; left: 50%; top: 0; width: 2px; height: 100%; background: rgba(255,255,255,0.08); pointer-events: none; }
@@ -67,7 +76,7 @@
     #screen2 .sub-title { font-size: 46px; font-weight: 900; color: #fff; text-shadow: 4px 4px 15px rgba(0,0,0,0.5); margin: 2px 0; }
     #screen2 .year { font-size: 38px; font-weight: 800; color: #FFD700; margin: 4px 0; }
     #screen2 .tagline { font-size: 18px; color: rgba(255,255,255,0.95); text-shadow: 2px 2px 8px rgba(0,0,0,0.3); margin-top: 6px; }
-    #screen2 .qr-container { background: #fff; padding: 8px; border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.3); display: inline-block; margin: 8px 0 4px; }
+    #screen2 .qr-container { background: #FFFFFF; padding: 12px; border-radius: 14px; box-shadow: 0 16px 48px rgba(0,0,0,0.45); display: inline-block; margin: 12px 0 6px; border: 2px solid rgba(0,0,0,0.2); }
     #screen2 .scan-text { font-size: 18px; font-weight: 700; color: #fff; letter-spacing: 1px; text-transform: uppercase; margin: 4px 0; }
     #screen2 .website-url { font-size: 20px; font-weight: 600; color: #FFD700; font-family: 'Courier New', monospace; }
   </style>
@@ -132,12 +141,20 @@
         });
       }
 
-      // Auto-fit both faces to 256x863 and 256x863 without scroll
+      // Auto-fit both faces to 256x863 and lock scale after first fit to avoid jitter
+      var lockedScale = { s1: null, s2: null };
       function fitFace(screenEl, scalerEl) {
         if (!screenEl || !scalerEl) return;
-        // Reset transform and center horizontally
-        scalerEl.style.transform = 'none';
+        // If locked, just reapply
+        var isS1 = scalerEl.id === 'scaler1';
+        var prev = isS1 ? lockedScale.s1 : lockedScale.s2;
         scalerEl.style.left = '50%';
+        if (prev) {
+          scalerEl.style.transform = 'translateX(-50%) scale(' + prev + ')';
+          return;
+        }
+        // Reset transform to measure
+        scalerEl.style.transform = 'none';
         // Measure content
         var maxW = 256, maxH = 863;
         var contentW = scalerEl.scrollWidth;
@@ -146,6 +163,7 @@
         // Allow upscaling to maximize readability, but never exceed face bounds
         var factor = Math.min(maxW / contentW, maxH / contentH);
         scalerEl.style.transform = 'translateX(-50%) scale(' + factor + ')';
+        if (isS1) lockedScale.s1 = factor; else lockedScale.s2 = factor;
       }
 
       function fitAll() {
@@ -154,8 +172,9 @@
       }
 
       setTimeout(fitAll, 300);
-      setTimeout(fitAll, 1000); // recheck after assets/render settle
-      window.addEventListener('resize', fitAll);
+      setTimeout(fitAll, 1000); // one more after assets settle
+      // Do not refit on resize to avoid jitter on LED controller
+      // window.addEventListener('resize', fitAll);
       var agendaList = document.getElementById('agendaList');
       if (agendaList) {
         var mo = new MutationObserver(function(){ setTimeout(function(){ paginateAgenda(); fitAll(); }, 60); });
@@ -169,9 +188,9 @@
         if (label && day) label.textContent = day;
       } catch(e) {}
 
-      // Paginate agenda to show 3 cards and auto-rotate/highlight (without moving DOM)
+      // Paginate agenda to show 3 cards and auto-rotate (no highlight) (without moving DOM)
       var PAGE_SIZE = 3; // show 3 big cards per page
-      var PAGE_INTERVAL_MS = 12000; // change highlight every 12 seconds
+      var PAGE_INTERVAL_MS = 12000; // change page every 12 seconds
       var currentPage = 0;
       var totalPages = 1;
       var lastActiveIndex = -1;
@@ -199,57 +218,13 @@
       function nextPage() {
         currentPage = (currentPage + 1) % totalPages;
         paginateAgenda();
-        fitAll();
+        // keep scale locked, just update visibility
       }
 
-      // Keep the active event visible: jump to the page containing it when it changes
-      function syncToActive() {
-        var container = document.getElementById('agendaList');
-        if (!container) return;
-        var eventsContainer = container.querySelector('.all-events');
-        if (!eventsContainer) return;
-        var items = Array.from(eventsContainer.querySelectorAll('.event-item'));
-        if (items.length === 0) return;
-        var activeEl = eventsContainer.querySelector('.event-item.current-active');
-        var idx = activeEl ? items.indexOf(activeEl) : -1;
-        if (idx >= 0 && idx !== lastActiveIndex) {
-          lastActiveIndex = idx;
-          var targetPage = Math.floor(idx / PAGE_SIZE);
-          if (targetPage !== currentPage) {
-            currentPage = targetPage;
-            paginateAgenda();
-            fitAll();
-          }
-        }
-      }
-      setInterval(syncToActive, 1000);
+      // No need to sync to current-active; requirement is to loop all items only
 
-      // Auto-highlight each event for 12 seconds in a loop (independent of real active)
-      var HIGHLIGHT_INTERVAL_MS = 12000; // 12s per item
-      var highlightIndex = -1;
-      function cycleHighlight() {
-        var container = document.getElementById('agendaList');
-        if (!container) return;
-        var eventsContainer = container.querySelector('.all-events');
-        if (!eventsContainer) return;
-        var items = Array.from(eventsContainer.querySelectorAll('.event-item'));
-        if (items.length === 0) return;
-        // Advance highlight index
-        highlightIndex = (highlightIndex + 1) % items.length;
-        // Compute target page for this index
-        var targetPage = Math.floor(highlightIndex / PAGE_SIZE);
-        if (targetPage !== currentPage) {
-          currentPage = targetPage;
-          paginateAgenda();
-          fitAll();
-        }
-        // Apply highlight
-        items.forEach(function(el, idx){
-          if (idx === highlightIndex) el.classList.add('auto-highlight');
-          else el.classList.remove('auto-highlight');
-        });
-      }
-      setInterval(cycleHighlight, HIGHLIGHT_INTERVAL_MS);
+      // Start page rotation loop
+      setInterval(nextPage, PAGE_INTERVAL_MS);
     });
   </script>
 </body>
