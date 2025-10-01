@@ -138,7 +138,7 @@ class ConferenceModel {
                 {
                     time: "09:00",
                     displayTime: "9:00 AM",
-                    title: "Side Event 05 - IWMI (#30) Scaling Climate-Resilient Water Solutions - Hall 03 - Spice",
+                    title: "Side Event 05 - Scaling Climate-Resilient Water Solutions - Hall 03 - Spice",
                     description: "IWMI (#30) Scaling Climate-Resilient Water Solutions through Research, Innovation, and Community Action at Hall 03 - Spice",
                     duration: 90
                 },
@@ -214,6 +214,13 @@ class ConferenceModel {
                 }
             ]
         };
+
+        // Remove descriptions from all agenda items (per request)
+        try {
+            Object.values(this.allAgendaData).forEach(dayList => {
+                dayList.forEach(ev => { if ('description' in ev) delete ev.description; });
+            });
+        } catch (e) { console.warn('Description removal skipped:', e); }
 
         // Using exact timetable (no testing compression)
 
