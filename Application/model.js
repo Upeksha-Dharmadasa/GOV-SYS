@@ -138,7 +138,7 @@ class ConferenceModel {
                 {
                     time: "09:00",
                     displayTime: "9:00 AM",
-                    title: "Side Event 05 - Scaling Climate-Resilient Water Solutions - Hall 03 - Spice",
+                    title: "Side Event 05 - IWMI Scaling Climate-Resilient Water Solutions - Hall 03 - Spice",
                     description: "IWMI (#30) Scaling Climate-Resilient Water Solutions through Research, Innovation, and Community Action at Hall 03 - Spice",
                     duration: 90
                 },
@@ -166,7 +166,7 @@ class ConferenceModel {
                 {
                     time: "11:30",
                     displayTime: "11:30 AM",
-                    title: "Side Event 06 - Loss & Damage Response and Climate security - Hall 03 - Spice",
+                    title: "Side event 06 - Loss & Damage Response and Climate security - Hall 03 - Spice",
                     description: "Loss & Damage Response and Climate security at Hall 03 - Spice",
                     duration: 90
                 },
@@ -194,14 +194,14 @@ class ConferenceModel {
                 {
                     time: "13:45",
                     displayTime: "1:45 PM",
-                    title: "Side Event 07 - Mobilizing Green Climate Fund Resources for Climate Action in Sri Lanka - Hall 03 - Lotus",
+                    title: "Side event 07 - Mobilizing Green Climate Fund Resources for Climate Action in Sri Lanka - Hall 03 - Lotus",
                     description: "Mobilizing Green Climate Fund Resources for Climate Action in Sri Lanka at Hall 03 - Lotus",
                     duration: 90
                 },
                 {
                     time: "15:30",
                     displayTime: "3:30 PM",
-                    title: "Closing Ceremony (#200) - Lotus Hall",
+                    title: "Closing Ceremony - Lotus Hall",
                     description: "Closing ceremony and final remarks for the Symposium on Climate Actions 2025 at Lotus Hall.",
                     duration: 60
                 },
