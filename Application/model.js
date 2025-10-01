@@ -124,7 +124,7 @@ class ConferenceModel {
                 {
                     time: "09:00",
                     displayTime: "9:00 AM",
-                    title: "Technical Session 02 A - Climate Change Adaptation at the local level - Hall 01 - Lotus",
+                    title: "Technical Session 02 A - Climate Change Adaptation at the local level: Challengers and lessons learned - Hall 01 - Lotus",
                     description: "Climate change adaptation at the local level: Challengers and lessons learned at Hall 01 - Lotus",
                     duration: 90
                 },
@@ -138,8 +138,8 @@ class ConferenceModel {
                 {
                     time: "09:00",
                     displayTime: "9:00 AM",
-                    title: "Side Event 05 - IWMI Scaling Climate-Resilient Water Solutions - Hall 03 - Spice",
-                    description: "IWMI Scaling Climate-Resilient Water Solutions through Research, Innovation, and Community Action at Hall 03 - Spice",
+                    title: "Side Event 05 - IWMI (#30) Scaling Climate-Resilient Water Solutions - Hall 03 - Spice",
+                    description: "IWMI (#30) Scaling Climate-Resilient Water Solutions through Research, Innovation, and Community Action at Hall 03 - Spice",
                     duration: 90
                 },
                 {
@@ -152,7 +152,7 @@ class ConferenceModel {
                 {
                     time: "11:30",
                     displayTime: "11:30 AM",
-                    title: "Technical Session 03 A - Climate smart agriculture: opportunities and challengers - Hall 01- Lotus",
+                    title: "Technical Session 03 A - Climate smart agriculture: opportunities and challengers - Hall 01 - Lotus",
                     description: "Climate smart agriculture: opportunities and challengers at Hall 01 - Lotus",
                     duration: 90
                 },
@@ -201,7 +201,7 @@ class ConferenceModel {
                 {
                     time: "15:30",
                     displayTime: "3:30 PM",
-                    title: "Closing Ceremony - Lotus Hall",
+                    title: "Closing Ceremony (#200) - Lotus Hall",
                     description: "Closing ceremony and final remarks for the Symposium on Climate Actions 2025 at Lotus Hall.",
                     duration: 60
                 },
