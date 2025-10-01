@@ -66,8 +66,8 @@
 
     /* Scoped styles for the right static screen */
     #screen2 .static-display { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: 24px; text-align: center; }
-    /* Keep a little space above the logo to avoid clipping */
-    #screen2 .logo-section { margin-top: 12px; }
+    /* No extra top margin so vertical centering is symmetric */
+    #screen2 .logo-section { margin-top: 0; }
     #screen2 .main-logo { max-width: 70%; height: auto; filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3)); }
     #screen2 .main-title { font-size: 40px; font-weight: 800; color: #fff; letter-spacing: 1px; text-shadow: 3px 3px 12px rgba(0,0,0,0.4); margin: 2px 0; }
     #screen2 .sub-title { font-size: 46px; font-weight: 900; color: #fff; text-shadow: 4px 4px 15px rgba(0,0,0,0.5); margin: 2px 0; }
@@ -145,6 +145,7 @@
         scalerEl.style.transform = 'none';
         scalerEl.style.left = '50%';
         scalerEl.style.top = centerVertically ? '50%' : '0';
+        scalerEl.style.transformOrigin = centerVertically ? '50% 50%' : '50% 0%';
         // Measure content
         var maxW = 256, maxH = 863;
         var contentW = scalerEl.scrollWidth;
