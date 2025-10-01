@@ -66,6 +66,8 @@
 
     /* Scoped styles for the right static screen */
     #screen2 .static-display { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: 24px; text-align: center; }
+    /* Keep a little space above the logo to avoid clipping */
+    #screen2 .logo-section { margin-top: 12px; }
     #screen2 .main-logo { max-width: 70%; height: auto; filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3)); }
     #screen2 .main-title { font-size: 40px; font-weight: 800; color: #fff; letter-spacing: 1px; text-shadow: 3px 3px 12px rgba(0,0,0,0.4); margin: 2px 0; }
     #screen2 .sub-title { font-size: 46px; font-weight: 900; color: #fff; text-shadow: 4px 4px 15px rgba(0,0,0,0.5); margin: 2px 0; }
@@ -137,11 +139,12 @@
       }
 
       // Auto-fit both faces to 256x863 and 256x863 without scroll
-      function fitFace(screenEl, scalerEl) {
+      function fitFace(screenEl, scalerEl, centerVertically) {
         if (!screenEl || !scalerEl) return;
-        // Reset transform and center horizontally
+        // Reset transform and prepare centering
         scalerEl.style.transform = 'none';
         scalerEl.style.left = '50%';
+        scalerEl.style.top = centerVertically ? '50%' : '0';
         // Measure content
         var maxW = 256, maxH = 863;
         var contentW = scalerEl.scrollWidth;
@@ -149,12 +152,12 @@
         if (!contentW || !contentH) return;
         // Allow upscaling to maximize readability, but never exceed face bounds
         var factor = Math.min(maxW / contentW, maxH / contentH);
-        scalerEl.style.transform = 'translateX(-50%) scale(' + factor + ')';
+        scalerEl.style.transform = (centerVertically ? 'translate(-50%, -50%)' : 'translateX(-50%)') + ' scale(' + factor + ')';
       }
 
       function fitAll() {
-        fitFace(document.getElementById('screen1'), document.getElementById('scaler1'));
-        fitFace(document.getElementById('screen2'), document.getElementById('scaler2'));
+        fitFace(document.getElementById('screen1'), document.getElementById('scaler1'), false);
+        fitFace(document.getElementById('screen2'), document.getElementById('scaler2'), true);
       }
 
       setTimeout(fitAll, 300);
